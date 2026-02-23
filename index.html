@@ -3,517 +3,347 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perlea — The Builder Activation System</title>
+  <title>Perlea — Ship Your First AI Artifact</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg: #050505;
-      --accent: #FF4500;
-      --card: #111111;
-    }
-
-    * { box-sizing: border-box; }
+    :root { --accent: #FF4500; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
-      color: white;
+      background: #050505;
+      color: #fff;
       margin: 0;
       overflow-x: hidden;
     }
 
-    ::selection { background: var(--accent); color: white; }
+    ::selection { background: var(--accent); color: #fff; }
 
-    .font-serif { font-family: 'Playfair Display', serif; }
+    .serif { font-family: 'Playfair Display', serif; }
 
     /* Reveal */
     .reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal.visible { opacity: 1; transform: none; }
 
-    /* Floats */
-    @keyframes float-hand-left {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50%       { transform: translateY(-20px) rotate(2deg); }
+    /* Nav compact on scroll */
+    #nav.compact {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(5,5,5,0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    @keyframes float-hand-right {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50%       { transform: translateY(20px) rotate(-2deg); }
-    }
-    .animate-float-left  { animation: float-hand-left  12s ease-in-out infinite; }
-    .animate-float-right { animation: float-hand-right 14s ease-in-out infinite; }
 
-    /* Noise */
-    .noise-overlay {
-      position: fixed; inset: 0; z-index: 50;
-      pointer-events: none; opacity: 0.05;
-      mix-blend-mode: overlay;
+    /* Horizontal rule */
+    .rule { border: none; border-top: 1px solid rgba(255,255,255,0.08); }
+
+    /* Noise (very subtle) */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0.03;
       background-image: url("https://grainy-gradients.vercel.app/noise.svg");
     }
 
-    /* Parallax cards */
-    .parallax-card-up   { transform: translateY(var(--scroll-offset-up,   0px)); }
-    .parallax-card-down { transform: translateY(var(--scroll-offset-down,  0px)); }
+    /* Card hover */
+    .work-card { transition: border-color 0.25s ease; }
+    .work-card:hover { border-color: rgba(255,69,0,0.3); }
+
+    /* Stagger delays */
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+    .d4 { transition-delay: 0.4s; }
   </style>
 </head>
 
 <body>
-<div class="min-h-screen bg-[#050505] selection:bg-[#FF4500] selection:text-white">
 
-  <!-- Noise -->
-  <div class="noise-overlay"></div>
+<!-- ────────────────────────────────────
+     NAV
+──────────────────────────────────── -->
+<nav id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-400 py-7">
+  <div class="max-w-5xl mx-auto px-8 flex items-center justify-between">
 
-  <!-- ══════════════════════════════
-       NAV
-  ══════════════════════════════ -->
-  <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-8">
-    <div class="container mx-auto px-6 flex items-center justify-between">
+    <a href="#" class="serif text-xl font-bold tracking-tight">Perlea.</a>
 
-      <a href="#" class="text-2xl font-bold tracking-tighter font-serif text-white hover:text-[#FF4500] transition-colors duration-300">
-        Perlea.
-      </a>
-
-      <div class="hidden md:flex items-center space-x-8">
-        <a href="#how-it-works" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">How It Works</a>
-        <a href="#projects"     class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Projects</a>
-        <a href="#manifesto"    class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Manifesto</a>
-      </div>
-
-      <a href="#cta"
-         class="inline-flex items-center justify-center px-6 py-3 rounded-full text-sm font-medium bg-white text-black hover:scale-105 hover:bg-gray-100 transition-all duration-300">
-        Start Building
-      </a>
-    </div>
-  </nav>
-
-  <!-- ══════════════════════════════
-       HERO
-  ══════════════════════════════ -->
-  <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20 bg-[#050505]">
-
-    <!-- Background atmosphere -->
-    <div class="absolute inset-0 z-0 pointer-events-none select-none">
-      <!-- Deep glow blobs -->
-      <div class="absolute top-0 left-0 w-full h-full">
-        <div class="absolute top-[-10%] left-[-5%]  w-[60vw] h-[60vw] max-w-3xl rounded-full bg-[#FF4500]/10 blur-[160px] opacity-70 mix-blend-screen"></div>
-        <div class="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] max-w-2xl rounded-full bg-[#FF2200]/8  blur-[140px] opacity-50 mix-blend-screen"></div>
-        <div class="absolute top-[40%] left-[40%] w-[30vw] h-[30vw] max-w-lg rounded-full bg-white/[0.02] blur-[100px]"></div>
-      </div>
-      <!-- Gradient fade to black at bottom -->
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050505] z-10"></div>
+    <div class="hidden md:flex items-center gap-10">
+      <a href="#method"   class="text-sm text-white/40 hover:text-white/80 transition-colors">Method</a>
+      <a href="#projects" class="text-sm text-white/40 hover:text-white/80 transition-colors">Projects</a>
+      <a href="#waitlist" class="text-sm text-white/40 hover:text-white/80 transition-colors">Waitlist</a>
     </div>
 
-    <!-- Floating geometric surrealist elements (CSS-only) -->
-    <div class="absolute -left-[8%] top-[-5%] w-[42vw] max-w-[700px] z-10 pointer-events-none animate-float-left opacity-30">
-      <svg viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="300" cy="300" r="280" stroke="#FF4500" stroke-width="1" stroke-dasharray="6 12" opacity="0.4"/>
-        <circle cx="300" cy="300" r="180" stroke="white" stroke-width="0.5" opacity="0.2"/>
-        <line x1="80" y1="300" x2="520" y2="300" stroke="#FF4500" stroke-width="0.5" opacity="0.3"/>
-        <line x1="300" y1="80" x2="300" y2="520" stroke="#FF4500" stroke-width="0.5" opacity="0.3"/>
-        <circle cx="300" cy="300" r="6" fill="#FF4500" opacity="0.6"/>
-        <polygon points="300,100 460,400 140,400" stroke="white" stroke-width="0.5" fill="none" opacity="0.15"/>
-      </svg>
-    </div>
+  </div>
+</nav>
 
-    <div class="absolute -right-[8%] bottom-[0%] w-[36vw] max-w-[600px] z-10 pointer-events-none animate-float-right opacity-25">
-      <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="60" y="60" width="380" height="380" rx="40" stroke="#FF4500" stroke-width="0.8" stroke-dasharray="4 8" opacity="0.5"/>
-        <rect x="120" y="120" width="260" height="260" rx="20" stroke="white" stroke-width="0.4" opacity="0.2"/>
-        <circle cx="250" cy="250" r="100" stroke="#FF4500" stroke-width="0.6" opacity="0.3"/>
-        <line x1="60" y1="60" x2="440" y2="440" stroke="white" stroke-width="0.3" opacity="0.15"/>
-        <line x1="440" y1="60" x2="60" y2="440" stroke="white" stroke-width="0.3" opacity="0.15"/>
-        <circle cx="250" cy="250" r="4" fill="#FF4500" opacity="0.7"/>
-      </svg>
-    </div>
 
-    <!-- Hero Content -->
-    <div class="container mx-auto px-6 relative z-20 text-center flex flex-col items-center justify-center h-full">
-      <div id="hero-content-wrapper" class="max-w-4xl mx-auto">
+<!-- ────────────────────────────────────
+     HERO
+──────────────────────────────────── -->
+<section class="min-h-screen flex flex-col justify-center px-8 pt-32 pb-24 max-w-5xl mx-auto">
 
-        <div class="reveal">
-          <h1 class="text-5xl md:text-7xl font-medium leading-[1.1] tracking-tight mb-6 text-[#ffe0e0] mix-blend-overlay font-serif"
-              style="text-shadow: 0 0 12px rgba(255,255,255,0.71);">
-            Stop learning<br>about AI.<br>
-            <span class="italic font-light text-[#ffe0e0]">Start building with it.</span>
-          </h1>
-        </div>
+  <div class="reveal mb-6">
+    <span class="text-[11px] tracking-[0.25em] uppercase text-white/30">Builder Activation System</span>
+  </div>
 
-        <div class="reveal" style="transition-delay: 200ms;">
-          <p class="text-base md:text-lg text-[#ffe0e0]/90 max-w-lg mx-auto mb-16 font-light tracking-wide leading-relaxed mix-blend-overlay"
-             style="text-shadow: 0 0 12px rgba(255,255,255,0.71);">
-            Perlea profiles you, maps your skill gaps, and forces you to build real AI-powered projects.
-            Learning happens through shipping.
-          </p>
-        </div>
+  <h1 class="reveal d1 serif font-bold leading-[1.05] text-white mb-10"
+      style="font-size: clamp(52px, 7vw, 96px);">
+    Stop learning<br>about AI.<br>
+    <em class="font-normal text-white/40">Start building.</em>
+  </h1>
 
-        <div class="reveal flex flex-col items-center gap-6" style="transition-delay: 400ms;">
-          <!-- Ghost CTA -->
-          <div class="relative group cursor-pointer" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
-            <div class="absolute inset-0 bg-[#FF4500]/20 blur-xl rounded-full opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
-            <div class="relative border border-white/20 bg-white/5 backdrop-blur-sm px-6 py-2 rounded-full flex items-center gap-3 text-xs md:text-sm text-white/80 uppercase tracking-widest hover:bg-white/10 transition-colors duration-300">
-              <span>Start Building</span>
-            </div>
-          </div>
+  <p class="reveal d2 text-white/40 text-lg font-light leading-relaxed max-w-md mb-14">
+    Perlea profiles you, maps your gaps, and forces you to ship real AI artifacts.
+    Learning happens through building.
+  </p>
 
-          <!-- Clock + location -->
-          <div class="flex items-center gap-4 text-[10px] md:text-xs text-white/40 uppercase tracking-widest mt-8 font-mono">
-            <span id="current-time">--:-- --</span>
-            <span class="w-px h-3 bg-white/20"></span>
-            <span>Dubai, UAE</span>
-          </div>
-        </div>
+  <div class="reveal d3 flex items-center gap-8">
+    <a href="#waitlist"
+       class="text-sm font-medium text-black bg-white px-7 py-3.5 rounded-full hover:bg-white/90 transition-colors">
+      Join Waitlist
+    </a>
+    <a href="#method" class="text-sm text-white/30 hover:text-white/60 transition-colors tracking-wide">
+      How it works ↓
+    </a>
+  </div>
 
-      </div>
-    </div>
-  </section>
+  <!-- Clock -->
+  <div class="reveal d4 flex items-center gap-3 mt-20 text-[11px] text-white/20 font-mono tracking-widest uppercase">
+    <span id="clock">--:-- --</span>
+    <span>·</span>
+    <span>Dubai</span>
+  </div>
 
-  <!-- ══════════════════════════════
-       MISSION
-  ══════════════════════════════ -->
-  <section id="how-it-works" class="py-32 relative">
-    <div class="container mx-auto px-6">
+</section>
 
-      <div class="max-w-4xl mx-auto text-center reveal">
-        <h2 class="text-3xl md:text-5xl lg:text-6xl leading-tight text-white/90 mb-12 font-serif">
-          Execution is no longer scarce.<br>
-          <span class="italic text-white/50">Direction is.</span>
-        </h2>
-        <p class="text-xl md:text-2xl text-gray-500 leading-relaxed font-light">
-          Most people learn about AI. Perlea makes you build with it — fast, structured, real.
-        </p>
-      </div>
 
-      <!-- Logo-style trust row -->
-      <div class="mt-32 grid grid-cols-3 md:grid-cols-6 gap-8 items-center justify-items-center opacity-30 grayscale hover:opacity-60 hover:grayscale-0 transition-all duration-700">
-        <div class="reveal font-bold text-sm tracking-widest">PROFILE</div>
-        <div class="reveal font-bold text-sm tracking-widest" style="transition-delay:100ms;">GRAPH</div>
-        <div class="reveal font-bold text-sm tracking-widest" style="transition-delay:200ms;">EXECUTE</div>
-        <div class="reveal font-bold text-sm tracking-widest" style="transition-delay:300ms;">SHIP</div>
-        <div class="reveal font-bold text-sm tracking-widest" style="transition-delay:400ms;">ITERATE</div>
-        <div class="reveal font-bold text-sm tracking-widest text-[#FF4500]" style="transition-delay:500ms;">MONETIZE</div>
-      </div>
+<!-- ────────────────────────────────────
+     DIVIDER + MANIFESTO QUOTE
+──────────────────────────────────── -->
+<div class="max-w-5xl mx-auto px-8">
+  <hr class="rule">
+</div>
 
-    </div>
-  </section>
+<section class="max-w-5xl mx-auto px-8 py-32">
+  <blockquote class="reveal serif italic text-white/70 leading-snug"
+              style="font-size: clamp(28px, 4vw, 52px); max-width: 820px;">
+    "Execution is no longer scarce.<br>
+    Direction, taste, and structured ambition are.<br>
+    <span class="text-[#FF4500] not-italic" style="font-family: inherit;">Perlea trains that muscle.</span>"
+  </blockquote>
+  <p class="reveal d1 text-white/20 text-sm mt-8 tracking-wide">— Perlea Manifesto, 2026</p>
+</section>
 
-  <!-- ══════════════════════════════
-       CARDS — HOW IT WORKS
-  ══════════════════════════════ -->
-  <section id="projects" class="py-40 relative overflow-hidden">
-    <div class="container mx-auto px-6 relative z-10">
 
-      <div class="reveal mb-32">
-        <h2 class="text-5xl md:text-7xl text-center font-serif">
-          Build your<br>
-          <span class="italic">first artifact.</span>
-        </h2>
-      </div>
+<!-- ────────────────────────────────────
+     METHOD
+──────────────────────────────────── -->
+<div class="max-w-5xl mx-auto px-8"><hr class="rule"></div>
 
-      <!-- Staggered card pair — matches reference layout -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+<section id="method" class="max-w-5xl mx-auto px-8 py-32">
 
-        <!-- Orange card -->
-        <div class="parallax-card-down">
-          <div class="reveal bg-[#FF4500] rounded-3xl p-8 md:p-12 aspect-[4/5] flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(255,69,0,0.3)] transition-all duration-500 group cursor-pointer">
-            <div class="flex justify-between items-start">
-              <div class="w-12 h-12 rounded-full bg-black/10 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
-                <iconify-icon icon="mdi:lightning-bolt" class="text-black text-2xl"></iconify-icon>
-              </div>
-              <span class="text-black font-medium text-sm border border-black/20 px-3 py-1 rounded-full">01</span>
-            </div>
-            <div>
-              <h3 class="text-4xl md:text-5xl text-black mb-4 leading-none tracking-tight font-serif">
-                Profile<br>Engine
-              </h3>
-              <p class="text-black/70 text-lg leading-snug">
-                We map your skills, goals, and ambition into a knowledge graph. Deep profiling from day one.
-              </p>
-            </div>
-            <div class="w-full h-px bg-black/10 mt-8"></div>
-          </div>
-        </div>
+  <p class="reveal text-[11px] tracking-[0.25em] uppercase text-white/25 mb-16">Method</p>
 
-        <!-- Dark card -->
-        <div class="parallax-card-up md:mt-24">
-          <div class="reveal bg-[#111] border border-white/10 rounded-3xl p-8 md:p-12 aspect-[4/5] flex flex-col justify-between shadow-2xl group cursor-pointer hover:border-[#FF4500]/50 transition-all duration-500"
-               style="transition-delay: 150ms;">
-            <div class="flex justify-between items-start">
-              <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                <iconify-icon icon="mdi:arrow-top-right" class="text-white text-2xl"></iconify-icon>
-              </div>
-              <span class="text-white/50 font-medium text-sm border border-white/10 px-3 py-1 rounded-full">02</span>
-            </div>
-            <div>
-              <h3 class="text-4xl md:text-5xl text-white mb-4 leading-none tracking-tight font-serif">
-                Execution<br>Layer
-              </h3>
-              <p class="text-gray-400 text-lg leading-snug">
-                AI agents scaffold, build, and ship your first artifact alongside you. You define the problem. The system executes.
-              </p>
-            </div>
-            <div class="w-full h-px bg-white/10 mt-8"></div>
-          </div>
-        </div>
+  <div class="grid md:grid-cols-3 gap-0 md:divide-x divide-white/[0.06]">
 
-      </div>
-
-      <!-- 3rd card — full width below -->
-      <div class="max-w-5xl mx-auto mt-8 reveal" style="transition-delay:200ms;">
-        <div class="bg-[#0f0f0f] border border-white/[0.06] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start md:items-end justify-between gap-8 group cursor-pointer hover:border-[#FF4500]/30 transition-all duration-500">
-          <div class="flex items-start gap-6">
-            <div class="w-12 h-12 rounded-full bg-[#FF4500]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF4500]/20 transition-colors">
-              <iconify-icon icon="mdi:source-branch" class="text-[#FF4500] text-2xl"></iconify-icon>
-            </div>
-            <div>
-              <span class="text-white/30 text-sm font-medium border border-white/10 px-3 py-1 rounded-full mb-4 inline-block">03</span>
-              <h3 class="text-3xl md:text-4xl text-white font-serif mt-3">Skill Graph</h3>
-              <p class="text-gray-400 text-lg leading-snug mt-3 max-w-lg">
-                Gaps become structured progression. The system tells you exactly what to build next and why — no guessing, no overwhelm.
-              </p>
-            </div>
-          </div>
-          <div class="flex-shrink-0">
-            <div class="text-[#FF4500] font-serif text-6xl font-bold opacity-20">7d</div>
-            <div class="text-gray-500 text-xs tracking-widest uppercase mt-1">to ship</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Dot grid background -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-[0.04] pointer-events-none"
-         style="background-image: radial-gradient(circle, #aaa 1px, transparent 1px); background-size: 40px 40px;"></div>
-  </section>
-
-  <!-- ══════════════════════════════
-       PROJECT TYPES
-  ══════════════════════════════ -->
-  <section class="py-32 bg-[#080808] relative">
-    <div class="container mx-auto px-6">
-
-      <div class="max-w-4xl mx-auto text-center mb-20 reveal">
-        <h2 class="text-3xl md:text-5xl lg:text-6xl leading-tight text-white/90 mb-8 font-serif">
-          Pick a project type.<br>
-          <span class="italic text-white/50">We scaffold everything.</span>
-        </h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-        <div class="reveal bg-[#0f0f0f] border border-white/[0.06] rounded-2xl p-7 hover:border-[#FF4500]/30 transition-all duration-300 group">
-          <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5 group-hover:bg-[#FF4500]/20 transition-colors">
-            <iconify-icon icon="mdi:lightning-bolt" class="text-[#FF4500]" width="20"></iconify-icon>
-          </div>
-          <h3 class="text-white font-semibold font-serif text-xl mb-2">AI Micro-Product</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">One input. One output. One URL. The atomic unit.</p>
-        </div>
-        <div class="reveal bg-[#0f0f0f] border border-white/[0.06] rounded-2xl p-7 hover:border-[#FF4500]/30 transition-all duration-300 group" style="transition-delay:100ms;">
-          <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5 group-hover:bg-[#FF4500]/20 transition-colors">
-            <iconify-icon icon="mdi:cog-transfer" class="text-[#FF4500]" width="20"></iconify-icon>
-          </div>
-          <h3 class="text-white font-semibold font-serif text-xl mb-2">Automation Workflow</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Connect tools. Save hours. Ship a workflow that runs itself.</p>
-        </div>
-        <div class="reveal bg-[#0f0f0f] border border-white/[0.06] rounded-2xl p-7 hover:border-[#FF4500]/30 transition-all duration-300 group" style="transition-delay:200ms;">
-          <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5 group-hover:bg-[#FF4500]/20 transition-colors">
-            <iconify-icon icon="mdi:code-braces" class="text-[#FF4500]" width="20"></iconify-icon>
-          </div>
-          <h3 class="text-white font-semibold font-serif text-xl mb-2">AI-Powered Tool</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">A real deployed app with AI in the loop — not a demo.</p>
-        </div>
-        <div class="reveal bg-[#0f0f0f] border border-white/[0.06] rounded-2xl p-7 hover:border-[#FF4500]/30 transition-all duration-300 group" style="transition-delay:100ms;">
-          <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5 group-hover:bg-[#FF4500]/20 transition-colors">
-            <iconify-icon icon="mdi:chart-scatter-plot" class="text-[#FF4500]" width="20"></iconify-icon>
-          </div>
-          <h3 class="text-white font-semibold font-serif text-xl mb-2">Data Project</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Turn raw data into a useful, shareable product.</p>
-        </div>
-        <div class="reveal bg-[#0f0f0f] border border-white/[0.06] rounded-2xl p-7 hover:border-[#FF4500]/30 transition-all duration-300 group md:col-span-2" style="transition-delay:200ms;">
-          <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5 group-hover:bg-[#FF4500]/20 transition-colors">
-            <iconify-icon icon="mdi:newspaper-variant" class="text-[#FF4500]" width="20"></iconify-icon>
-          </div>
-          <h3 class="text-white font-semibold font-serif text-xl mb-2">Niche Content Engine</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">AI that produces content you actually use — for a specific audience, a specific need. Not generic slop.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════
-       MANIFESTO
-  ══════════════════════════════ -->
-  <section id="manifesto" class="py-40 relative overflow-hidden bg-[#050505]">
-    <div class="container mx-auto px-6">
-
-      <div class="max-w-4xl mx-auto text-center reveal">
-        <h2 class="text-3xl md:text-5xl lg:text-6xl leading-tight text-white/90 mb-12 font-serif">
-          We don't teach you to prompt.<br>
-          <span class="italic text-white/50">We make you ship.</span>
-        </h2>
-        <p class="text-xl md:text-2xl text-gray-500 leading-relaxed font-light">
-          If the user doesn't build something real, the system failed.
-          That's the only metric that matters.
-        </p>
-      </div>
-
-      <!-- The stats row -->
-      <div class="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-        <div class="reveal text-center">
-          <div class="font-serif font-bold text-[#FF4500] mb-3" style="font-size: clamp(56px, 8vw, 100px);">7d</div>
-          <div class="text-gray-400 text-sm tracking-wide uppercase">first artifact shipped</div>
-        </div>
-        <div class="reveal text-center" style="transition-delay:150ms;">
-          <div class="font-serif font-bold text-white mb-3" style="font-size: clamp(56px, 8vw, 100px);">3×</div>
-          <div class="text-gray-400 text-sm tracking-wide uppercase">artifacts in 30 days</div>
-        </div>
-        <div class="reveal text-center" style="transition-delay:300ms;">
-          <div class="font-serif font-bold text-white/40 mb-3" style="font-size: clamp(56px, 8vw, 100px);">90d</div>
-          <div class="text-gray-400 text-sm tracking-wide uppercase">something monetizable</div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════
-       CTA
-  ══════════════════════════════ -->
-  <section id="cta" class="py-40 relative overflow-hidden bg-[#080808]">
-
-    <div class="absolute inset-0 pointer-events-none">
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#FF4500]/6 blur-[120px] rounded-full"></div>
-    </div>
-
-    <div class="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-
-      <div class="reveal mb-6">
-        <span class="text-[#FF4500] text-xs font-medium tracking-[0.25em] uppercase border border-[#FF4500]/30 px-4 py-1.5 rounded-full">Early Access</span>
-      </div>
-
-      <h2 class="reveal reveal-delay-1 text-5xl md:text-7xl font-medium leading-[1.05] tracking-tight mb-8 font-serif"
-          style="transition-delay: 150ms;">
-        Ready to ship<br>
-        <span class="italic">your first artifact?</span>
-      </h2>
-
-      <p class="reveal text-gray-400 text-lg mb-12 max-w-md" style="transition-delay:250ms;">
-        Pick a project type. We scaffold it. You build it. Done.
+    <div class="reveal pr-0 md:pr-12 pb-12 md:pb-0">
+      <div class="text-[#FF4500] text-xs font-mono mb-6 opacity-60">01</div>
+      <h3 class="serif text-2xl font-bold text-white mb-4">Profile Engine</h3>
+      <p class="text-white/35 text-sm leading-relaxed">
+        We map your skills, goals, and ambition into a knowledge graph. Deep profiling, not generic onboarding.
       </p>
+    </div>
 
-      <div class="reveal flex flex-col sm:flex-row gap-4 items-center w-full max-w-md" style="transition-delay:350ms;">
-        <input
-          type="email"
-          placeholder="your@email.com"
-          class="flex-1 w-full bg-[#111] border border-white/10 text-white placeholder-gray-600 rounded-full px-6 py-4 text-sm focus:outline-none focus:border-[#FF4500]/40 transition-colors"
-        />
-        <button class="w-full sm:w-auto flex-shrink-0 inline-flex items-center justify-center px-8 py-4 rounded-full text-sm font-medium bg-white text-black hover:scale-105 hover:bg-gray-100 transition-all duration-300 whitespace-nowrap">
-          Join Waitlist →
-        </button>
-      </div>
-
-      <p class="reveal text-gray-600 text-sm mt-6" style="transition-delay:450ms;">
-        No fluff. No passive learning. Just building.
+    <div class="reveal d1 px-0 md:px-12 py-12 md:py-0 border-t border-white/[0.06] md:border-t-0">
+      <div class="text-[#FF4500] text-xs font-mono mb-6 opacity-60">02</div>
+      <h3 class="serif text-2xl font-bold text-white mb-4">Skill Graph</h3>
+      <p class="text-white/35 text-sm leading-relaxed">
+        Gaps become structured progression. The system tells you exactly what to build next, and why.
       </p>
-
     </div>
-  </section>
 
-  <!-- ══════════════════════════════
-       FOOTER
-  ══════════════════════════════ -->
-  <footer class="py-20 border-t border-white/5 bg-[#050505] relative overflow-hidden">
-    <div class="container mx-auto px-6 relative z-10">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
-
-        <div class="w-full md:w-auto">
-          <h2 class="font-serif font-bold leading-[0.85] tracking-tighter text-white/8 select-none pointer-events-none"
-              style="font-size: clamp(60px, 10vw, 140px);">
-            PERLEA.
-          </h2>
-        </div>
-
-        <div class="flex flex-col gap-8 text-right">
-          <div class="flex flex-col gap-4 text-gray-400">
-            <a href="#manifesto"  class="hover:text-white transition-colors text-sm">Manifesto</a>
-            <a href="https://twitter.com/perleaai" class="hover:text-white transition-colors text-sm">Twitter</a>
-            <a href="#"           class="hover:text-white transition-colors text-sm">LinkedIn</a>
-          </div>
-          <p class="text-sm text-gray-600">© 2026 Perlea AI. All rights reserved.</p>
-        </div>
-
-      </div>
+    <div class="reveal d2 pl-0 md:pl-12 pt-12 md:pt-0 border-t border-white/[0.06] md:border-t-0">
+      <div class="text-[#FF4500] text-xs font-mono mb-6 opacity-60">03</div>
+      <h3 class="serif text-2xl font-bold text-white mb-4">Execution Layer</h3>
+      <p class="text-white/35 text-sm leading-relaxed">
+        AI agents scaffold, build, and ship alongside you. You define the problem. The system executes.
+      </p>
     </div>
-  </footer>
 
-</div><!-- /wrapper -->
+  </div>
 
+</section>
+
+
+<!-- ────────────────────────────────────
+     STATS
+──────────────────────────────────── -->
+<div class="max-w-5xl mx-auto px-8"><hr class="rule"></div>
+
+<section class="max-w-5xl mx-auto px-8 py-32">
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+    <div class="reveal">
+      <div class="serif text-5xl font-bold text-[#FF4500] mb-2">7d</div>
+      <div class="text-white/25 text-xs tracking-wide uppercase leading-snug">first artifact<br>shipped</div>
+    </div>
+    <div class="reveal d1">
+      <div class="serif text-5xl font-bold text-white mb-2">14d</div>
+      <div class="text-white/25 text-xs tracking-wide uppercase leading-snug">zero to<br>product</div>
+    </div>
+    <div class="reveal d2">
+      <div class="serif text-5xl font-bold text-white mb-2">3×</div>
+      <div class="text-white/25 text-xs tracking-wide uppercase leading-snug">artifacts<br>in 30 days</div>
+    </div>
+    <div class="reveal d3">
+      <div class="serif text-5xl font-bold text-white mb-2">90d</div>
+      <div class="text-white/25 text-xs tracking-wide uppercase leading-snug">something<br>monetizable</div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ────────────────────────────────────
+     PROJECT TYPES
+──────────────────────────────────── -->
+<div class="max-w-5xl mx-auto px-8"><hr class="rule"></div>
+
+<section id="projects" class="max-w-5xl mx-auto px-8 py-32">
+
+  <p class="reveal text-[11px] tracking-[0.25em] uppercase text-white/25 mb-16">What You'll Build</p>
+
+  <div class="grid md:grid-cols-2 gap-px bg-white/[0.06]">
+
+    <div class="work-card reveal bg-[#050505] border border-transparent p-10 hover:bg-[#0a0a0a] transition-colors">
+      <h3 class="serif text-xl font-bold text-white mb-3">AI Micro-Product</h3>
+      <p class="text-white/30 text-sm leading-relaxed">One input. One output. One URL. The atomic unit of AI building.</p>
+    </div>
+
+    <div class="work-card reveal d1 bg-[#050505] border border-transparent p-10 hover:bg-[#0a0a0a] transition-colors">
+      <h3 class="serif text-xl font-bold text-white mb-3">Automation Workflow</h3>
+      <p class="text-white/30 text-sm leading-relaxed">Connect tools. Save hours. Ship a workflow that runs itself.</p>
+    </div>
+
+    <div class="work-card reveal d1 bg-[#050505] border border-transparent p-10 hover:bg-[#0a0a0a] transition-colors">
+      <h3 class="serif text-xl font-bold text-white mb-3">AI-Powered Tool</h3>
+      <p class="text-white/30 text-sm leading-relaxed">A real deployed app with AI in the loop — not a demo, a product.</p>
+    </div>
+
+    <div class="work-card reveal d2 bg-[#050505] border border-transparent p-10 hover:bg-[#0a0a0a] transition-colors">
+      <h3 class="serif text-xl font-bold text-white mb-3">Data Project</h3>
+      <p class="text-white/30 text-sm leading-relaxed">Turn raw data into a useful, shareable artifact. Insight as product.</p>
+    </div>
+
+    <div class="work-card reveal d2 md:col-span-2 bg-[#050505] border border-transparent p-10 hover:bg-[#0a0a0a] transition-colors">
+      <h3 class="serif text-xl font-bold text-white mb-3">Niche Content Engine</h3>
+      <p class="text-white/30 text-sm leading-relaxed">AI that produces content for a specific audience, a specific need. Not generic slop.</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ────────────────────────────────────
+     WAITLIST
+──────────────────────────────────── -->
+<div class="max-w-5xl mx-auto px-8"><hr class="rule"></div>
+
+<section id="waitlist" class="max-w-5xl mx-auto px-8 py-40">
+
+  <h2 class="reveal serif font-bold leading-tight text-white mb-6"
+      style="font-size: clamp(40px, 5.5vw, 72px);">
+    Ready to ship<br>
+    <em class="font-normal text-white/35">your first artifact?</em>
+  </h2>
+
+  <p class="reveal d1 text-white/30 text-base mb-14 max-w-sm leading-relaxed">
+    No fluff. No passive learning. Just building.
+  </p>
+
+  <div class="reveal d2 flex flex-col sm:flex-row gap-3 max-w-md">
+    <input
+      type="email"
+      placeholder="your@email.com"
+      class="flex-1 bg-transparent border border-white/10 text-white placeholder-white/20 px-6 py-4 text-sm focus:outline-none focus:border-white/25 transition-colors rounded-full"
+    />
+    <button
+      class="flex-shrink-0 bg-white text-black text-sm font-medium px-8 py-4 rounded-full hover:bg-white/90 transition-colors whitespace-nowrap">
+      Join Waitlist →
+    </button>
+  </div>
+
+</section>
+
+
+<!-- ────────────────────────────────────
+     FOOTER
+──────────────────────────────────── -->
+<footer class="border-t border-white/[0.06] bg-[#050505] overflow-hidden">
+
+  <!-- Giant text -->
+  <div class="max-w-full overflow-hidden px-4 pt-16 pb-4">
+    <p class="serif font-bold text-white/[0.04] leading-none tracking-tighter select-none"
+       style="font-size: clamp(80px, 14vw, 200px);">
+      PERLEA.
+    </p>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-8 pb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <p class="text-white/20 text-xs tracking-wide">© 2026 Perlea AI</p>
+    <div class="flex gap-8">
+      <a href="#method"   class="text-white/20 text-xs hover:text-white/50 transition-colors tracking-wide">Method</a>
+      <a href="#projects" class="text-white/20 text-xs hover:text-white/50 transition-colors tracking-wide">Projects</a>
+      <a href="#"         class="text-white/20 text-xs hover:text-white/50 transition-colors tracking-wide">Privacy</a>
+    </div>
+  </div>
+
+</footer>
+
+
+<!-- ────────────────────────────────────
+     JS
+──────────────────────────────────── -->
 <script>
-  // ── Reveal on scroll ──
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
+  // Reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  // ── Nav scroll effect ──
-  const nav = document.getElementById('main-nav');
+  // Nav compact
+  const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      nav.classList.add('py-4', 'bg-[#050505]/80', 'backdrop-blur-md', 'border-b', 'border-white/5');
-      nav.classList.remove('py-8');
-    } else {
-      nav.classList.remove('py-4', 'bg-[#050505]/80', 'backdrop-blur-md', 'border-b', 'border-white/5');
-      nav.classList.add('py-8');
-    }
+    nav.classList.toggle('compact', window.scrollY > 40);
   }, { passive: true });
 
-  // ── Parallax cards ──
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-    document.querySelectorAll('.parallax-card-up').forEach(el => {
-      el.style.setProperty('--scroll-offset-up', `${scrolled * -0.05}px`);
-    });
-    document.querySelectorAll('.parallax-card-down').forEach(el => {
-      el.style.setProperty('--scroll-offset-down', `${scrolled * 0.05}px`);
-    });
-  }, { passive: true });
-
-  // ── Hero content parallax + fade ──
-  const heroWrapper = document.getElementById('hero-content-wrapper');
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-    if (scrolled < 1000) {
-      heroWrapper.style.transform = `translateY(${scrolled * 0.4}px)`;
-      heroWrapper.style.opacity = Math.max(0, 1 - scrolled / 600);
-    }
-  }, { passive: true });
-
-  // ── Live clock (Dubai) ──
-  function updateTime() {
-    const el = document.getElementById('current-time');
+  // Clock
+  function tick() {
+    const el = document.getElementById('clock');
     if (!el) return;
     const now = new Date();
-    let h = now.getHours();
-    const m = now.getMinutes().toString().padStart(2, '0');
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12;
-    el.textContent = `${h}:${m} ${ampm}`;
+    let h = now.getHours(), m = now.getMinutes().toString().padStart(2,'0');
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = (h % 12) || 12;
+    el.textContent = `${h}:${m} ${ap}`;
   }
-  setInterval(updateTime, 60000);
-  updateTime();
+  tick();
+  setInterval(tick, 60000);
 </script>
 
 </body>
