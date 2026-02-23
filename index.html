@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perlea — Ship Your First AI Artifact in 7 Days</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --accent: #FF4500;
+      --card: #111111;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: white;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .font-serif {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Reveal Animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* Float Animations */
+    @keyframes float-left {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-24px) rotate(3deg); }
+    }
+    @keyframes float-right {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(24px) rotate(-3deg); }
+    }
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-16px) scale(1.02); }
+    }
+
+    .animate-float-left  { animation: float-left  12s ease-in-out infinite; }
+    .animate-float-right { animation: float-right 14s ease-in-out infinite; }
+    .animate-float-slow  { animation: float-slow  18s ease-in-out infinite; }
+
+    /* Noise overlay */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0.05;
+      mix-blend-mode: overlay;
+      background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    }
+
+    /* Nav scroll state */
+    #main-nav.scrolled {
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    /* Hero gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Orange accent line */
+    .accent-line {
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* Card hover */
+    .project-card {
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 69, 0, 0.35) !important;
+      box-shadow: 0 20px 60px rgba(255, 69, 0, 0.08);
+    }
+
+    /* Step card hover */
+    .step-card {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .step-card:hover {
+      border-color: rgba(255, 69, 0, 0.35) !important;
+      box-shadow: 0 16px 48px rgba(255, 69, 0, 0.07);
+    }
+
+    /* CTA button */
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #e83d00;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(255, 69, 0, 0.35);
+    }
+
+    /* Manifesto quote */
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 180px;
+      line-height: 1;
+      color: var(--accent);
+      opacity: 0.15;
+      position: absolute;
+      top: -20px;
+      left: -10px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+<!-- Noise Overlay -->
+<div class="noise-overlay"></div>
+
+<!-- ═══════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════ -->
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-40 transition-all duration-500 py-6">
+  <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="text-2xl font-bold font-serif tracking-tight text-white hover:text-[#FF4500] transition-colors duration-300">
+      Perlea.
+    </a>
+
+    <!-- Links (desktop) -->
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#how-it-works" class="text-sm text-gray-400 hover:text-white transition-colors duration-300 tracking-wide">How it Works</a>
+      <a href="#projects"     class="text-sm text-gray-400 hover:text-white transition-colors duration-300 tracking-wide">Projects</a>
+      <a href="#manifesto"    class="text-sm text-gray-400 hover:text-white transition-colors duration-300 tracking-wide">Manifesto</a>
+    </div>
+
+    <!-- CTA -->
+    <a href="#cta" class="btn-primary hidden md:inline-flex items-center gap-2 text-sm px-5 py-2.5 rounded-sm">
+      Join Waitlist
+      <iconify-icon icon="mdi:arrow-right" width="16"></iconify-icon>
+    </a>
+
+    <!-- Mobile menu icon -->
+    <button class="md:hidden text-gray-400 hover:text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+      <iconify-icon icon="mdi:menu" width="24"></iconify-icon>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden mt-4 px-6 pb-4 flex flex-col gap-4 border-t border-white/5 pt-4">
+    <a href="#how-it-works" class="text-sm text-gray-400">How it Works</a>
+    <a href="#projects"     class="text-sm text-gray-400">Projects</a>
+    <a href="#manifesto"    class="text-sm text-gray-400">Manifesto</a>
+    <a href="#cta"          class="btn-primary text-sm px-5 py-2.5 rounded-sm text-center mt-2">Join Waitlist →</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-20">
+
+  <!-- Floating background shapes -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="animate-float-left absolute top-[10%] left-[-8%] w-96 h-96 rounded-full bg-[#FF4500]/5 blur-[120px]"></div>
+    <div class="animate-float-right absolute bottom-[15%] right-[-10%] w-[500px] h-[500px] rounded-full bg-white/[0.02] blur-[100px]"></div>
+    <div class="animate-float-slow absolute top-[40%] left-[50%] w-64 h-64 rounded-full bg-[#FF4500]/3 blur-[80px]"></div>
+
+    <!-- Geometric outlines -->
+    <div class="animate-float-left absolute top-[20%] right-[12%] w-48 h-48 border border-white/[0.04] rounded-2xl rotate-12"></div>
+    <div class="animate-float-right absolute bottom-[25%] left-[8%] w-32 h-32 border border-[#FF4500]/10 rounded-full"></div>
+    <div class="animate-float-slow absolute top-[55%] right-[25%] w-20 h-20 border border-white/[0.03] rotate-45"></div>
+  </div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <!-- Left: Copy -->
+    <div>
+      <!-- Label -->
+      <div class="reveal flex items-center gap-3 mb-8">
+        <div class="accent-line"></div>
+        <span class="text-[#FF4500] text-xs font-medium tracking-[0.2em] uppercase">Builder Activation System</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="reveal reveal-delay-1 font-serif font-bold leading-tight mb-6 text-white"
+          style="font-size: clamp(52px, 6vw, 88px);">
+        Stop learning<br>
+        about AI.<br>
+        <em class="text-[#FF4500]">Start building</em><br>
+        with it.
+      </h1>
+
+      <!-- Subtext -->
+      <p class="reveal reveal-delay-2 text-gray-400 text-lg leading-relaxed mb-10 max-w-lg">
+        Perlea profiles you, maps your skill gaps, and forces you to build real AI-powered projects.
+        Learning happens through shipping.
+      </p>
+
+      <!-- CTAs -->
+      <div class="reveal reveal-delay-3 flex flex-wrap gap-4 items-center">
+        <a href="#cta" class="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-sm text-base">
+          Start Building
+          <iconify-icon icon="mdi:arrow-right" width="18"></iconify-icon>
+        </a>
+        <a href="#manifesto" class="text-gray-400 text-base underline underline-offset-4 hover:text-white transition-colors duration-300">
+          Read the Manifesto ↓
+        </a>
+      </div>
+
+      <!-- Social proof hint -->
+      <div class="reveal reveal-delay-4 mt-12 flex items-center gap-3">
+        <div class="flex -space-x-2">
+          <div class="w-8 h-8 rounded-full bg-[#FF4500]/30 border border-[#FF4500]/40 flex items-center justify-center text-xs">B</div>
+          <div class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-xs">M</div>
+          <div class="w-8 h-8 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-xs">J</div>
+        </div>
+        <span class="text-gray-500 text-sm">Join builders shipping real AI artifacts</span>
+      </div>
+    </div>
+
+    <!-- Right: Visual artifact card -->
+    <div class="reveal reveal-delay-2 hidden md:flex items-center justify-center">
+      <div class="relative">
+        <!-- Main card -->
+        <div class="bg-[#0f0f0f] border border-white/8 rounded-2xl p-8 w-80 shadow-2xl">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+            <span class="text-gray-600 text-xs ml-2 font-mono">artifact-01.html</span>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#FF4500]/15 flex items-center justify-center flex-shrink-0">
+                <iconify-icon icon="mdi:check" class="text-[#FF4500]" width="16"></iconify-icon>
+              </div>
+              <div>
+                <div class="text-white text-sm font-medium">Profile complete</div>
+                <div class="text-gray-500 text-xs">Skills mapped to graph</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#FF4500]/15 flex items-center justify-center flex-shrink-0">
+                <iconify-icon icon="mdi:check" class="text-[#FF4500]" width="16"></iconify-icon>
+              </div>
+              <div>
+                <div class="text-white text-sm font-medium">Project scaffolded</div>
+                <div class="text-gray-500 text-xs">AI Micro-Product selected</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 animate-pulse">
+              <div class="w-8 h-8 rounded-lg bg-[#FF4500]/25 flex items-center justify-center flex-shrink-0">
+                <iconify-icon icon="mdi:rocket-launch" class="text-[#FF4500]" width="16"></iconify-icon>
+              </div>
+              <div>
+                <div class="text-white text-sm font-medium">Shipping artifact...</div>
+                <div class="text-[#FF4500] text-xs font-mono">Day 4 of 7</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-[#FF4500] to-[#FF7733] rounded-full" style="width: 57%"></div>
+          </div>
+          <div class="flex justify-between mt-2">
+            <span class="text-gray-600 text-xs">Progress</span>
+            <span class="text-[#FF4500] text-xs font-medium">57%</span>
+          </div>
+        </div>
+
+        <!-- Floating badge -->
+        <div class="animate-float-right absolute -top-4 -right-4 bg-[#FF4500] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+          Day 7 ✓ Shipped
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-600">
+    <span class="text-xs tracking-widest uppercase">Scroll</span>
+    <div class="w-px h-12 bg-gradient-to-b from-gray-600 to-transparent"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════ -->
+<section id="how-it-works" class="py-28 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Section label -->
+    <div class="reveal flex items-center gap-3 mb-4">
+      <div class="accent-line"></div>
+      <span class="text-[#FF4500] text-xs font-medium tracking-[0.2em] uppercase">The System</span>
+    </div>
+
+    <h2 class="reveal reveal-delay-1 font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+      How It Works
+    </h2>
+    <p class="reveal reveal-delay-2 text-gray-400 text-lg mb-16 max-w-xl">
+      Three steps. One shipped artifact.
+    </p>
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- Step 1 -->
+      <div class="step-card reveal reveal-delay-1 bg-[#111] border border-white/[0.06] rounded-xl p-8 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-6">
+          <iconify-icon icon="mdi:brain" class="text-[#FF4500]" width="24"></iconify-icon>
+        </div>
+        <div class="text-[#FF4500] text-xs font-medium tracking-widest uppercase mb-2">01</div>
+        <h3 class="font-serif text-xl font-bold text-white mb-3">Profile Engine</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          We map your skills, goals, and ambition into a knowledge graph. No generic onboarding — deep profiling from day one.
+        </p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-card reveal reveal-delay-2 bg-[#111] border border-white/[0.06] rounded-xl p-8 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-6">
+          <iconify-icon icon="mdi:source-branch" class="text-[#FF4500]" width="24"></iconify-icon>
+        </div>
+        <div class="text-[#FF4500] text-xs font-medium tracking-widest uppercase mb-2">02</div>
+        <h3 class="font-serif text-xl font-bold text-white mb-3">Skill Graph</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Gaps become a structured progression toward your first AI project. The system tells you exactly what to build next and why.
+        </p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-card reveal reveal-delay-3 bg-[#111] border border-white/[0.06] rounded-xl p-8 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-6">
+          <iconify-icon icon="mdi:rocket-launch" class="text-[#FF4500]" width="24"></iconify-icon>
+        </div>
+        <div class="text-[#FF4500] text-xs font-medium tracking-widest uppercase mb-2">03</div>
+        <h3 class="font-serif text-xl font-bold text-white mb-3">Execution Layer</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          AI agents scaffold, build, and ship your first artifact alongside you. You define the problem. The system executes.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     THE PROMISE
+═══════════════════════════════════════ -->
+<section class="py-28 px-6 bg-[#080808]">
+  <div class="max-w-6xl mx-auto text-center">
+
+    <div class="reveal flex items-center justify-center gap-3 mb-4">
+      <div class="accent-line mx-auto"></div>
+    </div>
+    <p class="reveal text-[#FF4500] text-xs font-medium tracking-[0.2em] uppercase mb-10">The Promise</p>
+
+    <!-- Hero stat -->
+    <div class="reveal mb-4">
+      <span class="font-serif font-bold text-[#FF4500]" style="font-size: clamp(80px, 12vw, 140px);">7 days</span>
+    </div>
+    <p class="reveal reveal-delay-1 text-gray-300 text-xl md:text-2xl font-light mb-20">
+      to your first shipped AI artifact
+    </p>
+
+    <!-- Sub-stats -->
+    <div class="reveal reveal-delay-2 grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+      <div class="bg-[#0f0f0f] border border-white/5 rounded-xl p-8">
+        <div class="font-serif font-bold text-[#FF4500] text-5xl mb-3">14 days</div>
+        <div class="text-gray-400 text-sm">zero clarity → shipped AI product</div>
+      </div>
+      <div class="bg-[#0f0f0f] border border-white/5 rounded-xl p-8">
+        <div class="font-serif font-bold text-[#FF4500] text-5xl mb-3">3</div>
+        <div class="text-gray-400 text-sm">artifacts shipped in 30 days</div>
+      </div>
+      <div class="bg-[#0f0f0f] border border-white/5 rounded-xl p-8">
+        <div class="font-serif font-bold text-[#FF4500] text-5xl mb-3">90 days</div>
+        <div class="text-gray-400 text-sm">something monetizable</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PROJECT TYPES
+═══════════════════════════════════════ -->
+<section id="projects" class="py-28 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="reveal flex items-center gap-3 mb-4">
+      <div class="accent-line"></div>
+      <span class="text-[#FF4500] text-xs font-medium tracking-[0.2em] uppercase">Project Types</span>
+    </div>
+
+    <h2 class="reveal reveal-delay-1 font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+      What You'll Build
+    </h2>
+    <p class="reveal reveal-delay-2 text-gray-400 text-lg mb-16 max-w-xl">
+      Pick a category. The system scaffolds everything. You ship.
+    </p>
+
+    <!-- 5 cards grid -->
+    <div class="grid md:grid-cols-3 gap-5">
+
+      <!-- Card 1 -->
+      <div class="project-card reveal reveal-delay-1 relative bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-7">
+        <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#FF4500]"></div>
+        <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5">
+          <iconify-icon icon="mdi:lightning-bolt" class="text-[#FF4500]" width="20"></iconify-icon>
+        </div>
+        <h3 class="text-white font-bold text-base mb-2">AI Micro-Product</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">One input. One output. One URL. The atomic unit of AI building.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="project-card reveal reveal-delay-2 relative bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-7">
+        <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#FF4500]"></div>
+        <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5">
+          <iconify-icon icon="mdi:cog-transfer" class="text-[#FF4500]" width="20"></iconify-icon>
+        </div>
+        <h3 class="text-white font-bold text-base mb-2">Automation Workflow</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Connect tools. Save hours. Ship a workflow that runs itself.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="project-card reveal reveal-delay-3 relative bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-7">
+        <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#FF4500]"></div>
+        <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5">
+          <iconify-icon icon="mdi:code-braces" class="text-[#FF4500]" width="20"></iconify-icon>
+        </div>
+        <h3 class="text-white font-bold text-base mb-2">AI-Powered Tool</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">A real app with AI in the loop — not a demo, a deployed tool.</p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="project-card reveal reveal-delay-1 relative bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-7">
+        <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#FF4500]"></div>
+        <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5">
+          <iconify-icon icon="mdi:chart-scatter-plot" class="text-[#FF4500]" width="20"></iconify-icon>
+        </div>
+        <h3 class="text-white font-bold text-base mb-2">Data Project</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Turn raw data into a useful, shareable product. Insight as an artifact.</p>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="project-card reveal reveal-delay-2 relative bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-7 md:col-span-2">
+        <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#FF4500]"></div>
+        <div class="w-10 h-10 rounded-lg bg-[#FF4500]/10 flex items-center justify-center mb-5">
+          <iconify-icon icon="mdi:newspaper-variant" class="text-[#FF4500]" width="20"></iconify-icon>
+        </div>
+        <h3 class="text-white font-bold text-base mb-2">Niche Content Engine</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">AI that produces content you actually use — for a specific audience, a specific format, a real need. Not generic slop.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MANIFESTO
+═══════════════════════════════════════ -->
+<section id="manifesto" class="py-32 px-6 bg-[#0a0a0a] overflow-hidden">
+  <div class="max-w-4xl mx-auto relative">
+
+    <!-- Giant quote mark -->
+    <div class="quote-mark select-none">"</div>
+
+    <!-- Quote -->
+    <div class="reveal relative z-10 pl-6">
+      <blockquote class="font-serif italic font-semibold text-white leading-snug"
+                  style="font-size: clamp(28px, 4vw, 52px);">
+        Execution is no longer scarce.<br>
+        Direction, taste, and<br>
+        structured ambition are.<br>
+        <span class="text-[#FF4500]">Perlea trains that muscle.</span>
+      </blockquote>
+
+      <div class="mt-10 flex items-center gap-4">
+        <div class="w-12 h-px bg-[#FF4500]"></div>
+        <span class="text-gray-500 text-sm italic font-light tracking-wide">— Perlea Manifesto, 2026</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     WHO THIS IS FOR
+═══════════════════════════════════════ -->
+<section class="py-28 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="reveal flex items-center gap-3 mb-4">
+      <div class="accent-line"></div>
+      <span class="text-[#FF4500] text-xs font-medium tracking-[0.2em] uppercase">Fit Check</span>
+    </div>
+
+    <h2 class="reveal reveal-delay-1 font-serif text-4xl md:text-5xl font-bold text-white mb-16">
+      Is Perlea for you?
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <!-- For -->
+      <div class="reveal reveal-delay-1 bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-8">
+        <h3 class="font-semibold text-white text-lg mb-6 flex items-center gap-2">
+          <iconify-icon icon="mdi:check-circle" class="text-green-400" width="20"></iconify-icon>
+          Built for you if:
+        </h3>
+        <ul class="space-y-5">
+          <li class="flex items-start gap-3">
+            <span class="text-green-400 text-lg mt-0.5 flex-shrink-0">✓</span>
+            <div>
+              <div class="text-white text-sm font-medium">You want to build, not consume</div>
+              <div class="text-gray-500 text-sm mt-0.5">Ambitious builders who want to create real things</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-400 text-lg mt-0.5 flex-shrink-0">✓</span>
+            <div>
+              <div class="text-white text-sm font-medium">You learn by doing</div>
+              <div class="text-gray-500 text-sm mt-0.5">Shipping one artifact teaches more than 40 hours of courses</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-400 text-lg mt-0.5 flex-shrink-0">✓</span>
+            <div>
+              <div class="text-white text-sm font-medium">You have ideas but haven't shipped yet</div>
+              <div class="text-gray-500 text-sm mt-0.5">That gap between idea and execution is exactly what Perlea closes</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Not for -->
+      <div class="reveal reveal-delay-2 bg-[#0f0f0f] border border-white/[0.06] rounded-xl p-8">
+        <h3 class="font-semibold text-white text-lg mb-6 flex items-center gap-2">
+          <iconify-icon icon="mdi:close-circle" class="text-red-400/80" width="20"></iconify-icon>
+          Not for you if:
+        </h3>
+        <ul class="space-y-5">
+          <li class="flex items-start gap-3">
+            <span class="text-red-400 text-lg mt-0.5 flex-shrink-0">✗</span>
+            <div>
+              <div class="text-white text-sm font-medium">You want another LMS or course library</div>
+              <div class="text-gray-500 text-sm mt-0.5">We have zero passive content. Build or don't show up.</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-red-400 text-lg mt-0.5 flex-shrink-0">✗</span>
+            <div>
+              <div class="text-white text-sm font-medium">You prefer prompt engineering tutorials</div>
+              <div class="text-gray-500 text-sm mt-0.5">Prompting is not a skill. Building is a skill.</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-red-400 text-lg mt-0.5 flex-shrink-0">✗</span>
+            <div>
+              <div class="text-white text-sm font-medium">You're looking for a startup accelerator</div>
+              <div class="text-gray-500 text-sm mt-0.5">That's not what this is. Yet.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FINAL CTA
+═══════════════════════════════════════ -->
+<section id="cta" class="py-32 px-6 bg-[#080808] relative overflow-hidden">
+
+  <!-- Glow -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#FF4500]/8 blur-[100px] rounded-full"></div>
+  </div>
+
+  <div class="relative z-10 max-w-2xl mx-auto text-center">
+    <div class="reveal flex items-center justify-center gap-3 mb-6">
+      <div class="accent-line"></div>
+      <span class="text-[#FF4500] text-xs font-medium tracking-[0.2em] uppercase">Early Access</span>
+      <div class="accent-line"></div>
+    </div>
+
+    <h2 class="reveal reveal-delay-1 font-serif text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+      Ready to ship your<br>first AI artifact?
+    </h2>
+
+    <p class="reveal reveal-delay-2 text-gray-400 text-lg mb-10">
+      Pick a project type. We scaffold it. You build it. Done.
+    </p>
+
+    <div class="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+      <input
+        type="email"
+        placeholder="your@email.com"
+        class="w-full sm:w-auto flex-1 max-w-xs bg-[#111] border border-white/10 text-white placeholder-gray-600 rounded-sm px-5 py-4 text-sm focus:outline-none focus:border-[#FF4500]/50 transition-colors"
+      />
+      <button class="btn-primary w-full sm:w-auto px-8 py-4 rounded-sm text-base whitespace-nowrap">
+        Join the Waitlist →
+      </button>
+    </div>
+
+    <p class="reveal reveal-delay-4 text-gray-600 text-sm">
+      No fluff. No passive learning. Just building.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="border-t border-white/[0.06] py-10 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <a href="#" class="font-serif text-xl font-bold text-white hover:text-[#FF4500] transition-colors">
+      Perlea.
+    </a>
+    <p class="text-gray-600 text-sm">© 2026 Perlea AI. All rights reserved.</p>
+    <div class="flex items-center gap-6">
+      <a href="#manifesto" class="text-gray-600 text-sm hover:text-white transition-colors">Manifesto</a>
+      <a href="#" class="text-gray-600 text-sm hover:text-white transition-colors">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+  // ── Scroll reveal (IntersectionObserver) ──
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // Trigger hero reveals immediately
+  setTimeout(() => {
+    document.querySelectorAll('section:first-of-type .reveal').forEach(el => {
+      el.classList.add('active');
+    });
+  }, 100);
+
+  // ── Nav scroll state ──
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  // ── Mobile menu: close on link click ──
+  document.querySelectorAll('#mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.add('hidden');
+    });
+  });
+</script>
+
+</body>
+</html>
