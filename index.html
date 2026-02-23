@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perlea — A New Learning Paradigm</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -63,6 +64,56 @@
     .d2 { transition-delay: 0.2s; }
     .d3 { transition-delay: 0.3s; }
     .d4 { transition-delay: 0.4s; }
+
+    /* ── CardSwap ── */
+    .swap-scene {
+      position: relative;
+      width: 360px;
+      height: 460px;
+      perspective: 900px;
+      transform-style: preserve-3d;
+      flex-shrink: 0;
+    }
+
+    .swap-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 320px;
+      height: 420px;
+      border-radius: 20px;
+      transform-style: preserve-3d;
+      will-change: transform;
+      backface-visibility: hidden;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .swap-card-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .swap-card-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .swap-card-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+    }
   </style>
 </head>
 
@@ -89,41 +140,148 @@
 <!-- ────────────────────────────────────
      HERO
 ──────────────────────────────────── -->
-<section class="min-h-screen flex flex-col justify-center px-8 pt-32 pb-24 max-w-5xl mx-auto">
+<section class="min-h-screen flex items-center px-8 pt-28 pb-20 max-w-5xl mx-auto">
+  <div class="flex flex-col md:flex-row items-center gap-16 w-full">
 
-  <div class="reveal mb-6">
-    <span class="text-[11px] tracking-[0.25em] uppercase text-white/30">A New Learning Paradigm</span>
+    <!-- Left: copy -->
+    <div class="flex-1 flex flex-col justify-center">
+
+      <div class="reveal mb-6">
+        <span class="text-[11px] tracking-[0.25em] uppercase text-white/30">A New Learning Paradigm</span>
+      </div>
+
+      <h1 class="reveal d1 serif font-bold leading-[1.05] text-white mb-10"
+          style="font-size: clamp(44px, 5.5vw, 80px);">
+        Learning<br>is building<br>
+        <em class="font-normal text-white/40">now.</em>
+      </h1>
+
+      <p class="reveal d2 text-white/40 text-base font-light leading-relaxed max-w-sm mb-12">
+        The boundary between learning and building has dissolved. Perlea is designed
+        around that truth — you develop real AI skills by doing real work, guided at every step.
+      </p>
+
+      <div class="reveal d3 flex items-center gap-8 mb-16">
+        <a href="#waitlist"
+           class="text-sm font-medium text-black bg-white px-7 py-3.5 rounded-full hover:bg-white/90 transition-colors">
+          Join Waitlist
+        </a>
+        <a href="#method" class="text-sm text-white/30 hover:text-white/60 transition-colors tracking-wide">
+          The paradigm ↓
+        </a>
+      </div>
+
+      <div class="reveal d4 flex items-center gap-3 text-[11px] text-white/20 font-mono tracking-widest uppercase">
+        <span id="clock">--:-- --</span>
+        <span>·</span>
+        <span>Dubai</span>
+      </div>
+
+    </div>
+
+    <!-- Right: CardSwap -->
+    <div class="reveal d2 hidden md:flex items-center justify-center flex-shrink-0">
+      <div class="swap-scene" id="card-swap">
+
+        <!-- Card 1 — AI Micro-Product -->
+        <div class="swap-card">
+          <div class="swap-card-inner">
+            <div class="swap-card-bg" style="background: linear-gradient(145deg, #FF4500 0%, #1a0a00 60%, #0d0d0d 100%);"></div>
+            <div class="swap-card-content">
+              <div class="flex items-start justify-between">
+                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">01 / 05</span>
+                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">AI<br>Micro-Product</h3>
+                <p class="text-white/50 text-xs leading-relaxed">One input. One output. One URL. Learn AI product thinking by reducing a real problem to its essence.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 — Automation Workflow -->
+        <div class="swap-card">
+          <div class="swap-card-inner">
+            <div class="swap-card-bg" style="background: linear-gradient(145deg, #0f1f2e 0%, #0d0d0d 60%);"></div>
+            <div class="swap-card-content">
+              <div class="flex items-start justify-between">
+                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">02 / 05</span>
+                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.636 5.636l2.121 2.121m8.485 8.485l2.121 2.121M5.636 18.364l2.121-2.121m8.485-8.485l2.121-2.121"/></svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">Automation<br>Workflow</h3>
+                <p class="text-white/50 text-xs leading-relaxed">Learn systems thinking by connecting tools to solve a real inefficiency. The result runs itself.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 — AI-Powered Tool -->
+        <div class="swap-card">
+          <div class="swap-card-inner">
+            <div class="swap-card-bg" style="background: linear-gradient(145deg, #1a0f2e 0%, #0d0d0d 60%);"></div>
+            <div class="swap-card-content">
+              <div class="flex items-start justify-between">
+                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">03 / 05</span>
+                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">AI-Powered<br>Tool</h3>
+                <p class="text-white/50 text-xs leading-relaxed">A full deployed product with AI in the loop. Learn to architect, not just prompt.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 — Data Project -->
+        <div class="swap-card">
+          <div class="swap-card-inner">
+            <div class="swap-card-bg" style="background: linear-gradient(145deg, #0a1f0f 0%, #0d0d0d 60%);"></div>
+            <div class="swap-card-content">
+              <div class="flex items-start justify-between">
+                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">04 / 05</span>
+                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">Data<br>Project</h3>
+                <p class="text-white/50 text-xs leading-relaxed">Learn to ask better questions by building something that answers them. Insight as artifact.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 — Content Engine -->
+        <div class="swap-card">
+          <div class="swap-card-inner">
+            <div class="swap-card-bg" style="background: linear-gradient(145deg, #1f1500 0%, #0d0d0d 60%);"></div>
+            <div class="swap-card-content">
+              <div class="flex items-start justify-between">
+                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">05 / 05</span>
+                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">Content<br>Engine</h3>
+                <p class="text-white/50 text-xs leading-relaxed">Operationalize knowledge by building AI that produces something real. The output is the proof.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
-
-  <h1 class="reveal d1 serif font-bold leading-[1.05] text-white mb-10"
-      style="font-size: clamp(52px, 7vw, 96px);">
-    Learning<br>is building<br>
-    <em class="font-normal text-white/40">now.</em>
-  </h1>
-
-  <p class="reveal d2 text-white/40 text-lg font-light leading-relaxed max-w-md mb-14">
-    The boundary between learning and building has dissolved. Perlea is designed around that truth —
-    you develop real AI skills by doing real work, guided by a system that knows where you are
-    and where you need to go.
-  </p>
-
-  <div class="reveal d3 flex items-center gap-8">
-    <a href="#waitlist"
-       class="text-sm font-medium text-black bg-white px-7 py-3.5 rounded-full hover:bg-white/90 transition-colors">
-      Join Waitlist
-    </a>
-    <a href="#method" class="text-sm text-white/30 hover:text-white/60 transition-colors tracking-wide">
-      The paradigm ↓
-    </a>
-  </div>
-
-  <!-- Clock -->
-  <div class="reveal d4 flex items-center gap-3 mt-20 text-[11px] text-white/20 font-mono tracking-widest uppercase">
-    <span id="clock">--:-- --</span>
-    <span>·</span>
-    <span>Dubai</span>
-  </div>
-
 </section>
 
 
@@ -359,24 +517,21 @@
      JS
 ──────────────────────────────────── -->
 <script>
-  // Reveal
+  // ── Reveal ──
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // Nav compact
+  // ── Nav compact ──
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('compact', window.scrollY > 40);
   }, { passive: true });
 
-  // Clock
+  // ── Clock ──
   function tick() {
     const el = document.getElementById('clock');
     if (!el) return;
@@ -388,6 +543,123 @@
   }
   tick();
   setInterval(tick, 60000);
+
+  // ─────────────────────────────────────────────
+  // CardSwap — vanilla JS port of the React component
+  // ─────────────────────────────────────────────
+  class CardSwap {
+    constructor(container, opts = {}) {
+      this.container  = container;
+      this.cards      = Array.from(container.querySelectorAll('.swap-card'));
+      this.total      = this.cards.length;
+      this.order      = Array.from({ length: this.total }, (_, i) => i);
+      this.distX      = opts.cardDistance     ?? 52;
+      this.distY      = opts.verticalDistance ?? 60;
+      this.delay      = opts.delay            ?? 3800;
+      this.skew       = opts.skewAmount       ?? 5;
+      this.paused     = false;
+      this.busy       = false;
+
+      const elastic   = (opts.easing ?? 'elastic') === 'elastic';
+      this.cfg = elastic
+        ? { ease: 'elastic.out(0.55, 0.8)', durDrop: 1.8, durMove: 1.8, durReturn: 1.8, overlap: 0.88, retDelay: 0.05 }
+        : { ease: 'power1.inOut',            durDrop: 0.7, durMove: 0.7, durReturn: 0.7, overlap: 0.45, retDelay: 0.2  };
+
+      this._init();
+    }
+
+    slot(i) {
+      return {
+        x:      i * this.distX,
+        y:     -i * this.distY,
+        z:     -i * this.distX * 1.5,
+        zIndex: this.total - i,
+      };
+    }
+
+    place(el, s) {
+      gsap.set(el, {
+        x: s.x, y: s.y, z: s.z,
+        xPercent: -50, yPercent: -50,
+        skewY: this.skew,
+        transformOrigin: 'center center',
+        zIndex: s.zIndex,
+        force3D: true,
+      });
+    }
+
+    _init() {
+      gsap.set(this.container, { perspective: 900, transformStyle: 'preserve-3d' });
+      this.order.forEach((ci, si) => this.place(this.cards[ci], this.slot(si)));
+      this._intervalId = setInterval(() => this._swap(), this.delay);
+
+      // Pause on hover
+      this.container.addEventListener('mouseenter', () => { this.paused = true;  });
+      this.container.addEventListener('mouseleave', () => { this.paused = false; });
+
+      // Click front card to advance
+      this.container.addEventListener('click', () => {
+        if (!this.busy) this._swap();
+      });
+    }
+
+    _swap() {
+      if (this.paused || this.busy) return;
+      this.busy = true;
+
+      const { cfg, order, cards, total } = this;
+      const tl = gsap.timeline({ onComplete: () => { this.busy = false; } });
+
+      const frontEl = cards[order[0]];
+
+      // 1. Drop front card down + fade
+      tl.to(frontEl, {
+        y: '+=900', rotation: 8, opacity: 0, skewY: 0,
+        duration: cfg.durDrop, ease: 'power2.in',
+      });
+
+      // 2. Slide remaining cards one slot forward
+      for (let i = 1; i < total; i++) {
+        const s = this.slot(i - 1);
+        tl.to(cards[order[i]], {
+          x: s.x, y: s.y, z: s.z, zIndex: s.zIndex, skewY: this.skew,
+          duration: cfg.durMove, ease: cfg.ease,
+        }, `-=${cfg.durMove * cfg.overlap}`);
+      }
+
+      // 3. Snap dropped card above viewport, put it at the back slot
+      const backSlot = this.slot(total - 1);
+      tl.set(frontEl, {
+        y: '-=1800', opacity: 0, rotation: -6, zIndex: backSlot.zIndex,
+      }, cfg.retDelay);
+      tl.to(frontEl, {
+        x: backSlot.x, y: backSlot.y, z: backSlot.z,
+        opacity: 1, rotation: 0, skewY: this.skew,
+        duration: cfg.durReturn, ease: cfg.ease,
+      }, `<`);
+
+      // Rotate order
+      const first = order.shift();
+      order.push(first);
+    }
+
+    destroy() { clearInterval(this._intervalId); }
+  }
+
+  // Init after DOM ready
+  window.addEventListener('DOMContentLoaded', () => {
+    const scene = document.getElementById('card-swap');
+    if (scene) new CardSwap(scene, { cardDistance: 48, verticalDistance: 56, delay: 3500, skewAmount: 5 });
+  });
+
+  // Also init immediately in case DOMContentLoaded already fired
+  (function tryInit() {
+    const scene = document.getElementById('card-swap');
+    if (scene && !scene._csInit) {
+      scene._csInit = true;
+      new CardSwap(scene, { cardDistance: 48, verticalDistance: 56, delay: 3500, skewAmount: 5 });
+    }
+  })();
 </script>
 
 </body>
