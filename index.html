@@ -186,12 +186,16 @@
 ──────────────────────────────────── -->
 <section class="relative min-h-screen overflow-hidden">
 
-  <!-- WebGL canvas fills the full hero -->
-  <canvas id="gradient-blinds" class="absolute inset-0 w-full h-full" style="display:block;"></canvas>
+  <!-- Dark base layer the canvas lightens over (matches App.tsx bg-[#1A1A1B]) -->
+  <div class="absolute inset-0" style="background:#0d0d0d;"></div>
+
+  <!-- WebGL canvas: mix-blend-mode lighten over the dark base (matches App.tsx) -->
+  <canvas id="gradient-blinds" class="absolute inset-0 w-full h-full"
+          style="display:block; mix-blend-mode:lighten;"></canvas>
 
   <!-- Fade to body bg at bottom -->
-  <div class="absolute bottom-0 left-0 right-0 h-56 pointer-events-none"
-       style="background: linear-gradient(to top, #050505 0%, transparent 100%);"></div>
+  <div class="absolute bottom-0 left-0 right-0 h-64 pointer-events-none"
+       style="background: linear-gradient(to top, #050505 0%, rgba(5,5,5,0.6) 60%, transparent 100%);"></div>
 
   <!-- Hero text: relative z-10 so it sits above the canvas -->
   <div class="relative z-10 min-h-screen flex flex-col justify-center px-8 pt-28 pb-24 max-w-5xl mx-auto">
@@ -633,17 +637,19 @@
     const canvas = document.getElementById('gradient-blinds');
     if (!canvas) return;
 
-    // ── Props ──
-    const COLORS           = ['#FF4500', '#CC2A00', '#3D0800', '#080808'];
-    const ANGLE            = -20;      // degrees
-    const NOISE            = 0.18;
-    const BLIND_COUNT      = 20;
-    const MOUSE_DAMPENING  = 0.08;     // 0 = instant, 1 = frozen
-    const SPOTLIGHT_RADIUS = 0.55;
-    const SPOTLIGHT_SOFT   = 1.0;
-    const SPOTLIGHT_OP     = 0.92;
-    const DISTORT          = 0.0;
+    // ── Props (mirroring App.tsx, adapted to Perlea brand) ──
+    const COLORS           = ['#FF4500', '#FF2200', '#7A0F00', '#1a0200', '#080808'];
+    const ANGLE            = -15;      // angle (matches App.tsx)
+    const NOISE            = 0.20;     // noise (matches App.tsx)
+    const BLIND_COUNT      = 20;       // blindCount (matches App.tsx)
+    const BLIND_MIN_WIDTH  = 40;       // blindMinWidth: scale down blinds on small screens
+    const MOUSE_DAMPENING  = 0.12;     // mouseDampening (matches App.tsx)
+    const SPOTLIGHT_RADIUS = 0.60;     // spotlightRadius (matches App.tsx)
+    const SPOTLIGHT_SOFT   = 0.80;     // spotlightSoftness (matches App.tsx)
+    const SPOTLIGHT_OP     = 0.90;     // spotlightOpacity (matches App.tsx)
+    const DISTORT          = 2.0;      // distortAmount (matches App.tsx — waves ON)
     const SHINE_LEFT       = true;     // shineDirection: 'left'
+    const MIX_BLEND        = 'lighten'; // mixBlendMode (matches App.tsx)
 
     // ── Parse hex colors → vec3 ──
     function hexToVec3(hex) {
@@ -719,8 +725,10 @@
         vec2 uv = gl_FragCoord.xy / uResolution;
         // keep Y=0 at bottom like WebGL
 
-        // ── wave distortion ──
-        uv.y += sin(uv.x * 7.0 + uTime * 0.35) * uDistort * 0.025;
+        // ── wave distortion (distortAmount=2 → noticeable wave) ──
+        // Scale matches original: amount/100 gives ~2% per unit
+        uv.y += sin(uv.x * 8.0 + uTime * 0.4) * uDistort * 0.012;
+        uv.x += cos(uv.y * 5.0 + uTime * 0.25) * uDistort * 0.006;
 
         // ── aspect-correct rotation ──
         float aspect = uResolution.x / uResolution.y;
@@ -824,7 +832,7 @@
     gl.uniform1i(U.colorCount, COLORS.length);
     colorVecs.forEach((c, i) => gl.uniform3fv(colorLocs[i], c));
 
-    // ── Resize handler ──
+    // ── Resize handler (includes blindMinWidth scaling) ──
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     function resize() {
       const w = canvas.clientWidth  * dpr;
@@ -833,6 +841,14 @@
       canvas.height = h;
       gl.viewport(0, 0, w, h);
       gl.uniform2f(U.resolution, w, h);
+
+      // blindMinWidth: scale down blind count if each blind would be too narrow
+      // blindCount * blindMinWidth > canvasWidth → reduce count
+      const physicalW   = canvas.clientWidth;
+      const minBlindPx  = BLIND_MIN_WIDTH;
+      const maxBlinds   = Math.max(1, Math.floor(physicalW / minBlindPx));
+      const activeBlinds = Math.min(BLIND_COUNT, maxBlinds);
+      gl.uniform1f(U.blinds, activeBlinds);
     }
     resize();
     window.addEventListener('resize', resize, { passive: true });
@@ -858,10 +874,11 @@
     // ── Render loop ──
     const start = performance.now();
     function render() {
-      // Lerp mouse position (dampening)
-      const damp = 1 - Math.pow(MOUSE_DAMPENING, 1/60);
-      smoothMX += (targetMX - smoothMX) * damp;
-      smoothMY += (targetMY - smoothMY) * damp;
+      // Lerp mouse (README: 0 = instant, higher = more smoothing)
+      // lerpFactor = 1 - dampening: 0→1.0 (instant), 0.12→0.88 (responsive), 0.9→0.1 (slow)
+      const lerpFactor = 1.0 - MOUSE_DAMPENING;
+      smoothMX += (targetMX - smoothMX) * lerpFactor;
+      smoothMY += (targetMY - smoothMY) * lerpFactor;
 
       const t = (performance.now() - start) * 0.001;
       gl.uniform1f(U.time,  t);
