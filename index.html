@@ -227,13 +227,6 @@
       </a>
     </div>
 
-    <div class="reveal d4 flex items-center gap-3 text-[11px] font-mono tracking-widest uppercase"
-         style="color:rgba(255,255,255,0.25);">
-      <span id="clock">--:-- --</span>
-      <span>·</span>
-      <span>Dubai</span>
-    </div>
-
   </div>
 </section>
 
@@ -946,15 +939,7 @@
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => { nav.classList.toggle('compact', window.scrollY > 40); }, { passive: true });
 
-  // ── Clock ──
-  function tick() {
-    const el = document.getElementById('clock'); if (!el) return;
-    const now = new Date();
-    let h = now.getHours(), m = now.getMinutes().toString().padStart(2,'0');
-    const ap = h >= 12 ? 'PM' : 'AM'; h = (h % 12) || 12;
-    el.textContent = h + ':' + m + ' ' + ap;
-  }
-  tick(); setInterval(tick, 60000);
+
 </script>
 
 
