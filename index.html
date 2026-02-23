@@ -66,53 +66,97 @@
     .d4 { transition-delay: 0.4s; }
 
     /* ── CardSwap ── */
-    .swap-scene {
+    .swap-outer {
       position: relative;
-      width: 360px;
-      height: 460px;
-      perspective: 900px;
-      transform-style: preserve-3d;
+      width: 380px;
+      height: 480px;
       flex-shrink: 0;
     }
 
+    /* matches React: perspective-[1200px] transform-gpu */
+    .swap-perspective {
+      perspective: 1200px;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* matches React inner: absolute inset-0 [transform-style:preserve-3d] */
+    .swap-stage {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+    }
+
+    /* matches React Card: absolute top-1/2 left-1/2 rounded-xl border
+       [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] */
     .swap-card {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 320px;
-      height: 420px;
-      border-radius: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
       transform-style: preserve-3d;
       will-change: transform;
       backface-visibility: hidden;
       overflow: hidden;
       cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.07);
+      /* width/height set inline to match React's style prop */
+      width: 340px;
+      height: 420px;
     }
 
-    .swap-card-inner {
+    /* matches App.tsx: relative h-full w-full flex flex-col */
+    .swap-card-body {
+      position: relative;
       width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 2rem;
+    }
+
+    /* matches App.tsx: flex-1 overflow-hidden (image area) */
+    .swap-card-visual {
+      flex: 1;
+      overflow: hidden;
       position: relative;
     }
 
-    .swap-card-bg {
+    /* CSS gradient "image" fill */
+    .swap-card-visual-fill {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.7s ease;
+    }
+    .swap-card:hover .swap-card-visual-fill {
+      transform: scale(1.06);
+    }
+
+    /* matches App.tsx: absolute inset-0 bg-gradient-to-t from-black/60 to-transparent */
+    .swap-card-overlay {
       position: absolute;
       inset: 0;
-      z-index: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
     }
 
-    .swap-card-content {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      justify-content: space-between;
+    /* matches App.tsx: absolute bottom-0 left-0 right-0 p-8 text-white */
+    .swap-card-text {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem;
+      color: white;
+    }
+
+    /* capability tag */
+    .swap-card-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 0.5rem;
+      font-family: 'Inter', sans-serif;
     }
   </style>
 </head>
@@ -180,104 +224,144 @@
     </div>
 
     <!-- Right: CardSwap -->
-    <div class="reveal d2 hidden md:flex items-center justify-center flex-shrink-0">
-      <div class="swap-scene" id="card-swap">
+    <div class="reveal d2 hidden md:flex items-center justify-center">
+      <div class="swap-outer">
+        <div class="swap-perspective">
+          <div class="swap-stage" id="card-swap">
 
-        <!-- Card 1 — AI Micro-Product -->
-        <div class="swap-card">
-          <div class="swap-card-inner">
-            <div class="swap-card-bg" style="background: linear-gradient(145deg, #FF4500 0%, #1a0a00 60%, #0d0d0d 100%);"></div>
-            <div class="swap-card-content">
-              <div class="flex items-start justify-between">
-                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">01 / 05</span>
-                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <!-- ── Card 1: Personalized Learning Graph ── -->
+            <div class="swap-card">
+              <div class="swap-card-body">
+                <div class="swap-card-visual">
+                  <div class="swap-card-visual-fill" style="background: radial-gradient(ellipse at 30% 40%, #FF4500 0%, #8B1A00 35%, #1a0800 65%, #0a0a0a 100%);"></div>
+                  <!-- subtle grid pattern overlay -->
+                  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:32px 32px;"></div>
+                  <div class="swap-card-overlay"></div>
+                </div>
+                <div class="swap-card-text">
+                  <span class="swap-card-tag">Capability 01</span>
+                  <h3 class="serif text-xl font-bold mb-2 leading-snug">Personalized<br>Learning Graph</h3>
+                  <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:80%;">
+                    A live map of what you know, what you don't, and what to tackle next. Not a quiz — a living model that updates as you build.
+                  </p>
                 </div>
               </div>
-              <div>
-                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">AI<br>Micro-Product</h3>
-                <p class="text-white/50 text-xs leading-relaxed">One input. One output. One URL. Learn AI product thinking by reducing a real problem to its essence.</p>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Card 2 — Automation Workflow -->
-        <div class="swap-card">
-          <div class="swap-card-inner">
-            <div class="swap-card-bg" style="background: linear-gradient(145deg, #0f1f2e 0%, #0d0d0d 60%);"></div>
-            <div class="swap-card-content">
-              <div class="flex items-start justify-between">
-                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">02 / 05</span>
-                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.636 5.636l2.121 2.121m8.485 8.485l2.121 2.121M5.636 18.364l2.121-2.121m8.485-8.485l2.121-2.121"/></svg>
+            <!-- ── Card 2: Agent-Assisted Building ── -->
+            <div class="swap-card">
+              <div class="swap-card-body">
+                <div class="swap-card-visual">
+                  <div class="swap-card-visual-fill" style="background: radial-gradient(ellipse at 70% 30%, #1a3a5c 0%, #0d1f30 40%, #080d12 70%, #0a0a0a 100%);"></div>
+                  <!-- dot grid -->
+                  <div style="position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.07) 1px,transparent 1px);background-size:24px 24px;"></div>
+                  <div class="swap-card-overlay"></div>
+                  <!-- terminal lines decoration -->
+                  <div style="position:absolute;top:24px;left:24px;font-family:monospace;font-size:11px;color:rgba(255,255,255,0.15);line-height:1.8;">
+                    <div>$ perlea scaffold --track ai-tool</div>
+                    <div style="color:rgba(255,69,0,0.5);">✓ profiling complete</div>
+                    <div>✓ gaps identified (3)</div>
+                    <div style="color:rgba(255,255,255,0.08);">▸ building artifact...</div>
+                  </div>
+                </div>
+                <div class="swap-card-text">
+                  <span class="swap-card-tag">Capability 02</span>
+                  <h3 class="serif text-xl font-bold mb-2 leading-snug">Agent-Assisted<br>Building</h3>
+                  <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:80%;">
+                    AI scaffolds your projects and executes the hard parts. You make the decisions. The system handles the execution.
+                  </p>
                 </div>
               </div>
-              <div>
-                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">Automation<br>Workflow</h3>
-                <p class="text-white/50 text-xs leading-relaxed">Learn systems thinking by connecting tools to solve a real inefficiency. The result runs itself.</p>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Card 3 — AI-Powered Tool -->
-        <div class="swap-card">
-          <div class="swap-card-inner">
-            <div class="swap-card-bg" style="background: linear-gradient(145deg, #1a0f2e 0%, #0d0d0d 60%);"></div>
-            <div class="swap-card-content">
-              <div class="flex items-start justify-between">
-                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">03 / 05</span>
-                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <!-- ── Card 3: Structured Project Paths ── -->
+            <div class="swap-card">
+              <div class="swap-card-body">
+                <div class="swap-card-visual">
+                  <div class="swap-card-visual-fill" style="background: radial-gradient(ellipse at 50% 60%, #2a1540 0%, #150a25 45%, #0a0a0a 100%);"></div>
+                  <!-- flowing lines -->
+                  <svg style="position:absolute;inset:0;width:100%;height:60%;opacity:0.12;" viewBox="0 0 340 200" preserveAspectRatio="none">
+                    <path d="M0,100 C80,60 160,140 340,80" stroke="white" stroke-width="1" fill="none"/>
+                    <path d="M0,130 C100,90 200,160 340,110" stroke="white" stroke-width="0.5" fill="none"/>
+                    <path d="M0,70 C60,40 180,120 340,50" stroke="#FF4500" stroke-width="0.8" fill="none" opacity="0.5"/>
+                    <circle cx="120" cy="88" r="3" fill="white" opacity="0.4"/>
+                    <circle cx="220" cy="128" r="3" fill="#FF4500" opacity="0.6"/>
+                  </svg>
+                  <div class="swap-card-overlay"></div>
+                </div>
+                <div class="swap-card-text">
+                  <span class="swap-card-tag">Capability 03</span>
+                  <h3 class="serif text-xl font-bold mb-2 leading-snug">Structured<br>Project Paths</h3>
+                  <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:80%;">
+                    Every project is a designed learning experience. Each artifact closes a specific gap and opens the next challenge.
+                  </p>
                 </div>
               </div>
-              <div>
-                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">AI-Powered<br>Tool</h3>
-                <p class="text-white/50 text-xs leading-relaxed">A full deployed product with AI in the loop. Learn to architect, not just prompt.</p>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Card 4 — Data Project -->
-        <div class="swap-card">
-          <div class="swap-card-inner">
-            <div class="swap-card-bg" style="background: linear-gradient(145deg, #0a1f0f 0%, #0d0d0d 60%);"></div>
-            <div class="swap-card-content">
-              <div class="flex items-start justify-between">
-                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">04 / 05</span>
-                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <!-- ── Card 4: Adaptive Progression ── -->
+            <div class="swap-card">
+              <div class="swap-card-body">
+                <div class="swap-card-visual">
+                  <div class="swap-card-visual-fill" style="background: radial-gradient(ellipse at 20% 70%, #0f2a15 0%, #081508 50%, #0a0a0a 100%);"></div>
+                  <!-- progress bars decoration -->
+                  <div style="position:absolute;top:28px;left:28px;right:28px;">
+                    <div style="margin-bottom:10px;">
+                      <div style="font-size:10px;color:rgba(255,255,255,0.2);font-family:monospace;margin-bottom:4px;">prompt engineering</div>
+                      <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;"><div style="width:92%;height:100%;background:#FF4500;border-radius:2px;opacity:0.7;"></div></div>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                      <div style="font-size:10px;color:rgba(255,255,255,0.2);font-family:monospace;margin-bottom:4px;">api integration</div>
+                      <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;"><div style="width:68%;height:100%;background:#FF4500;border-radius:2px;opacity:0.5;"></div></div>
+                    </div>
+                    <div>
+                      <div style="font-size:10px;color:rgba(255,255,255,0.2);font-family:monospace;margin-bottom:4px;">product architecture</div>
+                      <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;"><div style="width:35%;height:100%;background:rgba(255,255,255,0.3);border-radius:2px;"></div></div>
+                    </div>
+                  </div>
+                  <div class="swap-card-overlay"></div>
+                </div>
+                <div class="swap-card-text">
+                  <span class="swap-card-tag">Capability 04</span>
+                  <h3 class="serif text-xl font-bold mb-2 leading-snug">Adaptive<br>Progression</h3>
+                  <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:80%;">
+                    The graph evolves with every project you complete. Your next challenge is always calibrated to exactly where you are.
+                  </p>
                 </div>
               </div>
-              <div>
-                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">Data<br>Project</h3>
-                <p class="text-white/50 text-xs leading-relaxed">Learn to ask better questions by building something that answers them. Insight as artifact.</p>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Card 5 — Content Engine -->
-        <div class="swap-card">
-          <div class="swap-card-inner">
-            <div class="swap-card-bg" style="background: linear-gradient(145deg, #1f1500 0%, #0d0d0d 60%);"></div>
-            <div class="swap-card-content">
-              <div class="flex items-start justify-between">
-                <span class="text-white/30 text-[10px] font-mono tracking-widest uppercase">05 / 05</span>
-                <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <!-- ── Card 5: Deployable Proof ── -->
+            <div class="swap-card">
+              <div class="swap-card-body">
+                <div class="swap-card-visual">
+                  <div class="swap-card-visual-fill" style="background: radial-gradient(ellipse at 60% 30%, #2a1800 0%, #150c00 45%, #0a0a0a 100%);"></div>
+                  <!-- URL bar decoration -->
+                  <div style="position:absolute;top:28px;left:24px;right:24px;">
+                    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:8px;">
+                      <div style="width:6px;height:6px;border-radius:50%;background:#FF4500;opacity:0.8;flex-shrink:0;"></div>
+                      <span style="font-family:monospace;font-size:11px;color:rgba(255,255,255,0.3);">perlea.ai/u/you/artifact-01</span>
+                    </div>
+                    <div style="margin-top:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:12px;font-family:monospace;font-size:11px;color:rgba(255,255,255,0.15);line-height:1.7;">
+                      <span style="color:rgba(255,69,0,0.6);">✓</span> deployed 4 hours ago<br>
+                      <span style="color:rgba(255,69,0,0.6);">✓</span> 47 unique visitors<br>
+                      <span style="color:rgba(255,255,255,0.06);">→</span> skills unlocked: 3
+                    </div>
+                  </div>
+                  <div class="swap-card-overlay"></div>
+                </div>
+                <div class="swap-card-text">
+                  <span class="swap-card-tag">Capability 05</span>
+                  <h3 class="serif text-xl font-bold mb-2 leading-snug">Deployable<br>Proof</h3>
+                  <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:80%;">
+                    Your portfolio is deployed, shareable artifacts. Not certificates. Not completions. Work that exists in the world.
+                  </p>
                 </div>
               </div>
-              <div>
-                <h3 class="serif text-2xl font-bold text-white mb-2 leading-tight">Content<br>Engine</h3>
-                <p class="text-white/50 text-xs leading-relaxed">Operationalize knowledge by building AI that produces something real. The output is the proof.</p>
-              </div>
             </div>
+
           </div>
         </div>
-
       </div>
     </div>
 
@@ -544,121 +628,147 @@
   tick();
   setInterval(tick, 60000);
 
-  // ─────────────────────────────────────────────
-  // CardSwap — vanilla JS port of the React component
-  // ─────────────────────────────────────────────
-  class CardSwap {
-    constructor(container, opts = {}) {
-      this.container  = container;
-      this.cards      = Array.from(container.querySelectorAll('.swap-card'));
-      this.total      = this.cards.length;
-      this.order      = Array.from({ length: this.total }, (_, i) => i);
-      this.distX      = opts.cardDistance     ?? 52;
-      this.distY      = opts.verticalDistance ?? 60;
-      this.delay      = opts.delay            ?? 3800;
-      this.skew       = opts.skewAmount       ?? 5;
-      this.paused     = false;
-      this.busy       = false;
+  // ─────────────────────────────────────────────────────
+  //  CardSwap — faithful vanilla port of the React component
+  //  Mirrors useEffect logic: makeSlot, placeNow, swap tl
+  // ─────────────────────────────────────────────────────
+  (function initCardSwap() {
 
-      const elastic   = (opts.easing ?? 'elastic') === 'elastic';
-      this.cfg = elastic
-        ? { ease: 'elastic.out(0.55, 0.8)', durDrop: 1.8, durMove: 1.8, durReturn: 1.8, overlap: 0.88, retDelay: 0.05 }
-        : { ease: 'power1.inOut',            durDrop: 0.7, durMove: 0.7, durReturn: 0.7, overlap: 0.45, retDelay: 0.2  };
+    // — Config (matches React props defaults) —
+    const CARD_DISTANCE      = 52;   // cardDistance
+    const VERTICAL_DISTANCE  = 60;   // verticalDistance
+    const DELAY              = 3800; // delay ms
+    const PAUSE_ON_HOVER     = true; // pauseOnHover
+    const SKEW_AMOUNT        = 6;    // skewAmount
+    const EASING             = 'elastic'; // 'elastic' | 'linear'
 
-      this._init();
-    }
+    // — Config object (matches React's config const) —
+    const config = EASING === 'elastic'
+      ? { ease: 'elastic.out(0.6,0.9)', durDrop: 2,   durMove: 2,   durReturn: 2,   promoteOverlap: 0.9,  returnDelay: 0.05 }
+      : { ease: 'power1.inOut',          durDrop: 0.8, durMove: 0.8, durReturn: 0.8, promoteOverlap: 0.45, returnDelay: 0.2  };
 
-    slot(i) {
+    // — makeSlot(i, distX, distY, total): Slot —
+    function makeSlot(i, distX, distY, total) {
       return {
-        x:      i * this.distX,
-        y:     -i * this.distY,
-        z:     -i * this.distX * 1.5,
-        zIndex: this.total - i,
+        x:      i * distX,
+        y:     -i * distY,
+        z:     -i * distX * 1.5,
+        zIndex: total - i,
       };
     }
 
-    place(el, s) {
+    // — placeNow(el, slot, skew) — matches React's placeNow exactly —
+    function placeNow(el, slot, skew) {
       gsap.set(el, {
-        x: s.x, y: s.y, z: s.z,
+        x: slot.x, y: slot.y, z: slot.z,
         xPercent: -50, yPercent: -50,
-        skewY: this.skew,
+        skewY: skew,
         transformOrigin: 'center center',
-        zIndex: s.zIndex,
+        zIndex: slot.zIndex,
         force3D: true,
       });
     }
 
-    _init() {
-      gsap.set(this.container, { perspective: 900, transformStyle: 'preserve-3d' });
-      this.order.forEach((ci, si) => this.place(this.cards[ci], this.slot(si)));
-      this._intervalId = setInterval(() => this._swap(), this.delay);
+    const container = document.getElementById('card-swap');
+    if (!container) return;
 
-      // Pause on hover
-      this.container.addEventListener('mouseenter', () => { this.paused = true;  });
-      this.container.addEventListener('mouseleave', () => { this.paused = false; });
+    const refs    = Array.from(container.querySelectorAll('.swap-card'));
+    const total   = refs.length;
+    const order   = refs.map((_, i) => i); // mutable, mirrors useRef<number[]>
 
-      // Click front card to advance
-      this.container.addEventListener('click', () => {
-        if (!this.busy) this._swap();
+    let tlCurrent   = null;
+    let intervalId  = null;
+    let isPaused    = false;
+
+    // — Initial placement (mirrors useEffect body before setInterval) —
+    refs.forEach((el, i) => {
+      placeNow(el, makeSlot(i, CARD_DISTANCE, VERTICAL_DISTANCE, total), SKEW_AMOUNT);
+    });
+
+    // — swap() — mirrors the inner swap() closure in useEffect —
+    function swap() {
+      if (order.length < 2) return;
+
+      const [front, ...rest] = order;
+      const elFront = refs[front];
+      if (!elFront) return;
+
+      const tl = gsap.timeline();
+      tlCurrent = tl;
+
+      // 1. Drop front card (y += 500, matches original)
+      tl.to(elFront, {
+        y: '+=500',
+        duration: config.durDrop,
+        ease: config.ease,
       });
-    }
 
-    _swap() {
-      if (this.paused || this.busy) return;
-      this.busy = true;
+      // addLabel('promote', -=${config.durDrop * config.promoteOverlap})
+      tl.addLabel('promote', `-=${config.durDrop * config.promoteOverlap}`);
 
-      const { cfg, order, cards, total } = this;
-      const tl = gsap.timeline({ onComplete: () => { this.busy = false; } });
+      // 2. Promote each remaining card (with i*0.15 stagger, matches original)
+      rest.forEach((idx, i) => {
+        const el   = refs[idx];
+        if (!el) return;
+        const slot = makeSlot(i, CARD_DISTANCE, VERTICAL_DISTANCE, total);
 
-      const frontEl = cards[order[0]];
-
-      // 1. Drop front card down + fade
-      tl.to(frontEl, {
-        y: '+=900', rotation: 8, opacity: 0, skewY: 0,
-        duration: cfg.durDrop, ease: 'power2.in',
+        tl.set(el,  { zIndex: slot.zIndex }, 'promote');
+        tl.to(el, {
+          x: slot.x, y: slot.y, z: slot.z,
+          duration: config.durMove,
+          ease: config.ease,
+        }, `promote+=${i * 0.15}`);
       });
 
-      // 2. Slide remaining cards one slot forward
-      for (let i = 1; i < total; i++) {
-        const s = this.slot(i - 1);
-        tl.to(cards[order[i]], {
-          x: s.x, y: s.y, z: s.z, zIndex: s.zIndex, skewY: this.skew,
-          duration: cfg.durMove, ease: cfg.ease,
-        }, `-=${cfg.durMove * cfg.overlap}`);
-      }
+      // 3. Return front to back slot (matches React's addLabel('return') + tl.call + tl.to)
+      const backSlot = makeSlot(total - 1, CARD_DISTANCE, VERTICAL_DISTANCE, total);
 
-      // 3. Snap dropped card above viewport, put it at the back slot
-      const backSlot = this.slot(total - 1);
-      tl.set(frontEl, {
-        y: '-=1800', opacity: 0, rotation: -6, zIndex: backSlot.zIndex,
-      }, cfg.retDelay);
-      tl.to(frontEl, {
+      // addLabel('return', `promote+=${config.durMove * config.returnDelay}`)
+      tl.addLabel('return', `promote+=${config.durMove * config.returnDelay}`);
+
+      tl.call(() => {
+        gsap.set(elFront, { zIndex: backSlot.zIndex });
+      }, undefined, 'return');
+
+      tl.to(elFront, {
         x: backSlot.x, y: backSlot.y, z: backSlot.z,
-        opacity: 1, rotation: 0, skewY: this.skew,
-        duration: cfg.durReturn, ease: cfg.ease,
-      }, `<`);
+        duration: config.durReturn,
+        ease: config.ease,
+      }, 'return');
 
-      // Rotate order
-      const first = order.shift();
-      order.push(first);
+      // Rotate order (mirrors: order.current = [...rest, front])
+      tl.call(() => {
+        const f = order.shift();
+        order.push(f);
+      });
     }
 
-    destroy() { clearInterval(this._intervalId); }
-  }
+    // — Start interval —
+    intervalId = setInterval(swap, DELAY);
 
-  // Init after DOM ready
-  window.addEventListener('DOMContentLoaded', () => {
-    const scene = document.getElementById('card-swap');
-    if (scene) new CardSwap(scene, { cardDistance: 48, verticalDistance: 56, delay: 3500, skewAmount: 5 });
-  });
-
-  // Also init immediately in case DOMContentLoaded already fired
-  (function tryInit() {
-    const scene = document.getElementById('card-swap');
-    if (scene && !scene._csInit) {
-      scene._csInit = true;
-      new CardSwap(scene, { cardDistance: 48, verticalDistance: 56, delay: 3500, skewAmount: 5 });
+    // — Pause on hover (matches pauseOnHover branch) —
+    if (PAUSE_ON_HOVER) {
+      container.addEventListener('mouseenter', () => {
+        tlCurrent?.pause();
+        clearInterval(intervalId);
+        isPaused = true;
+      });
+      container.addEventListener('mouseleave', () => {
+        tlCurrent?.play();
+        intervalId = setInterval(swap, DELAY);
+        isPaused = false;
+      });
     }
+
+    // — Click to advance —
+    container.addEventListener('click', () => {
+      if (!isPaused) {
+        clearInterval(intervalId);
+        swap();
+        intervalId = setInterval(swap, DELAY);
+      }
+    });
+
   })();
 </script>
 
