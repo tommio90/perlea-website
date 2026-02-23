@@ -68,8 +68,8 @@
     /* ── CardSwap ── */
     .swap-outer {
       position: relative;
-      width: 380px;
-      height: 480px;
+      width: clamp(300px, 42vw, 420px);
+      height: clamp(380px, 54vw, 520px);
       flex-shrink: 0;
     }
 
@@ -241,17 +241,23 @@
 <!-- ────────────────────────────────────
      CAPABILITIES (CardSwap moved here)
 ──────────────────────────────────── -->
-<section id="capabilities" class="py-32 px-8 bg-[#050505]">
-  <div class="max-w-5xl mx-auto">
+<section id="capabilities" class="py-24 px-8 bg-[#050505]" style="min-height:640px;">
+  <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
 
-    <p class="reveal text-[11px] tracking-[0.25em] uppercase text-white/25 mb-4">Capabilities</p>
-    <p class="reveal d1 serif font-bold text-white mb-20" style="font-size: clamp(32px, 4vw, 56px);">
-      What the system<br><em class="font-normal text-white/35">does for you.</em>
-    </p>
+    <!-- Left col: text -->
+    <div class="flex-1 min-w-0">
+      <p class="reveal text-[11px] tracking-[0.25em] uppercase mb-5" style="color:rgba(255,255,255,0.25);">Capabilities</p>
+      <p class="reveal d1 serif font-bold text-white mb-6 leading-[1.1]" style="font-size: clamp(36px, 4.5vw, 62px);">
+        What the system<br><em class="font-normal" style="color:rgba(255,255,255,0.30);">does for you.</em>
+      </p>
+      <p class="reveal d2 text-sm leading-relaxed max-w-xs" style="color:rgba(255,255,255,0.4);">
+        Five pillars that turn every learner into a builder — and every build into proof of mastery.
+      </p>
+    </div>
 
-    <!-- CardSwap centered -->
-    <div class="reveal d2 flex items-center justify-center">
-      <div class="swap-outer" style="width:420px; height:520px;">
+    <!-- Right col: CardSwap -->
+    <div class="reveal d2 flex-shrink-0 flex items-center justify-center">
+      <div class="swap-outer">
         <div class="swap-perspective">
           <div class="swap-stage" id="card-swap">
 
