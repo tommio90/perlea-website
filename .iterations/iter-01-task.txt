@@ -1,0 +1,33 @@
+Improve /Users/giuseppetomasello/perlea-website/index.html for iteration 1/20.
+
+PERSONA FEEDBACK (Marcus — Founder, freight-tech startup, Series A in 11 weeks):
+Rating: 3/10
+Conversion likelihood: 2/10
+Verdict: Too vague and slow to connect to my specific need; I'd bounce and keep searching for a more targeted solution.
+Drop-off reason: Too abstract. Doesn't quickly convince me it's worth my time or money to build a specific AI demo for my Series A.
+
+CONFUSING ELEMENTS (fix these):
+- The connection between 'learning' and what I need to *build* isn't clear.
+- The word 'paradigm' is a red flag for empty promises.
+
+MISSING INFORMATION (add these):
+- Specific examples of what I can *build* related to AI, preferably in logistics or supply chain.
+- A timeline - can I *really* get a demo ready in 8 weeks?
+
+COPY IMPROVEMENTS (implement exactly):
+- [Hero Headline] Change 'Learning is building
+now.' → 'Build AI-Powered Logistics Apps. Fast.'
+- [Hero Paragraph] Change 'The boundary between learning and building has dissolved. Perlea is designed around that truth — you develop real AI skills by doing real work, guided at every step.' → 'Get hands-on experience building AI apps for logistics and supply chain. Guided tutorials and pre-built components let you launch a demo in weeks.'
+- [Waitlist Section] Change 'Join Waitlist' → 'Get Early Access'
+
+STRUCTURAL IMPROVEMENTS (implement):
+- Add a section showing specific demo examples or case studies related to logistics/supply chain AI. (because: Provides immediate proof that this platform is relevant to my needs.)
+- Include a pricing estimate or range. (because: Helps me quickly determine if it's financially viable.)
+
+CONSTRAINTS (non-negotiable):
+- Edit ONLY index.html
+- Keep: WebGL gradient-blinds canvas, CardSwap component, #050505 bg, #FF4500 accent
+- Keep: all section IDs (capabilities, who, waitlist, etc.)
+- Make surgical changes only — don't rewrite sections entirely
+- Commit message must start with 'iterate-01:'
+- After editing, run: git -C /Users/giuseppetomasello/perlea-website add -A && git -C /Users/giuseppetomasello/perlea-website commit -m "iterate-01: marcus feedback (rating 3/10)" && git -C /Users/giuseppetomasello/perlea-website push origin main

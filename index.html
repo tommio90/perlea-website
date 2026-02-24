@@ -11,15 +11,162 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
-    :root { --accent: #FF4500; }
+    :root {
+      --accent: #FF4500;
+      --bg: #050505;
+      --bg-card: #0d0d0d;
+      --nav-compact-bg: rgba(5,5,5,0.9);
+      --rule-color: rgba(255,255,255,0.08);
+      --grid-gap: rgba(255,255,255,0.05);
+    }
+
+    [data-theme="light"] {
+      --bg: #f7f5f1;
+      --bg-card: #e8e4de;
+      --nav-compact-bg: rgba(247,245,241,0.92);
+      --rule-color: rgba(0,0,0,0.09);
+      --grid-gap: rgba(0,0,0,0.07);
+    }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #050505;
+      background: var(--bg);
       color: #fff;
       margin: 0;
       overflow-x: hidden;
+      transition: background 0.35s ease, color 0.35s ease;
     }
+
+    /* ── Light mode overrides ── */
+    [data-theme="light"] body { color: #0c0c0a; }
+
+    /* Tailwind text-white in light mode (exclude cards) */
+    [data-theme="light"] .text-white:not(.swap-card *) { color: #0c0c0a !important; }
+    [data-theme="light"] .text-white\/30:not(.swap-card *),
+    [data-theme="light"] .text-white\/40:not(.swap-card *) { color: rgba(0,0,0,0.32) !important; }
+
+    /* Tailwind bg classes */
+    [data-theme="light"] .bg-\[\#050505\] { background: var(--bg) !important; }
+
+    /* Footer giant text — keep same opacity feel */
+    [data-theme="light"] footer .text-white\/\[0\.04\] { color: rgba(0,0,0,0.06) !important; }
+    [data-theme="light"] footer .text-white\/20 { color: rgba(0,0,0,0.25) !important; }
+
+    /* Nav logo */
+    [data-theme="light"] #nav .serif { color: #0c0c0a; }
+    [data-theme="light"] #nav a { color: rgba(0,0,0,0.4); }
+    [data-theme="light"] #nav a:hover { color: rgba(0,0,0,0.8); }
+
+    /* Toggle button */
+    #theme-toggle {
+      width: 36px; height: 20px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      flex-shrink: 0;
+    }
+    [data-theme="light"] #theme-toggle {
+      background: rgba(0,0,0,0.1);
+      border-color: rgba(0,0,0,0.18);
+    }
+    #theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    [data-theme="light"] #theme-toggle::after {
+      transform: translateX(16px);
+      background: #0c0c0a;
+    }
+
+    /* Flywheel grid + cells */
+    [data-theme="light"] .flywheel-grid { background: var(--grid-gap) !important; }
+    [data-theme="light"] .flywheel-cell { background: var(--bg) !important; }
+
+    /* Persona cards */
+    [data-theme="light"] .persona-card { background: var(--bg-card) !important; }
+
+    /* Waitlist input */
+    [data-theme="light"] input[type="email"] {
+      border-color: rgba(0,0,0,0.15) !important;
+      color: #0c0c0a !important;
+    }
+    [data-theme="light"] input[type="email"]::placeholder { color: rgba(0,0,0,0.3) !important; }
+
+    /* Compounding quote */
+    [data-theme="light"] .compounding-quote { border-color: rgba(0,0,0,0.07) !important; }
+    [data-theme="light"] .compounding-quote p { color: rgba(0,0,0,0.3) !important; }
+
+    /* Smooth transition for bg-swapped inline elements */
+    [data-theme="light"] section,
+    [data-theme="light"] footer,
+    [data-theme="light"] .flywheel-cell,
+    [data-theme="light"] .persona-card { transition: background 0.35s ease !important; }
+
+    /* ── Inline text color overrides (CSS !important beats inline styles) ── */
+    /* High-opacity text (0.60 – 0.72) */
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.72"],
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.65"],
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.60"],
+    [data-theme="light"] .persona-card p[style*="rgba(255,255,255,0.65"] { color: rgba(0,0,0,0.70) !important; }
+
+    /* Mid text (0.40 – 0.55) */
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.55"],
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.45"],
+    [data-theme="light"] section li[style*="rgba(255,255,255,0.25"],
+    [data-theme="light"] .persona-card p[style*="rgba(255,255,255,0.45"] { color: rgba(0,0,0,0.52) !important; }
+
+    /* Dim text (0.25 – 0.38) */
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.38"],
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.35"],
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.30"],
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.25"] { color: rgba(0,0,0,0.38) !important; }
+
+    /* Section label tags */
+    [data-theme="light"] section p[style*="rgba(255,255,255,0.25"]:not(.persona-card *) { color: rgba(0,0,0,0.30) !important; }
+
+    /* "Who it's for" subhead tint */
+    [data-theme="light"] #who em[style*="rgba(255,255,255,0.28"] { color: rgba(0,0,0,0.22) !important; }
+    [data-theme="light"] section h2 em[style*="rgba(255,255,255"] { color: rgba(0,0,0,0.20) !important; }
+
+    /* hero em stays white — hero is always dark */
+
+    /* Persona name subtitle */
+    [data-theme="light"] .persona-card p[style*="rgba(255,255,255,0.3"] { color: rgba(0,0,0,0.38) !important; }
+
+    /* Persona quote */
+    [data-theme="light"] .persona-card .serif[style*="rgba(255,255,255,0.65"] { color: rgba(0,0,0,0.60) !important; }
+
+    /* "The difference" list items */
+    [data-theme="light"] section ul[style*="rgba(255,255,255,0.25"],
+    [data-theme="light"] section ul[style*="rgba(255,255,255,0.60"] { color: rgba(0,0,0,0.52) !important; }
+
+    /* Nav links inline */
+    [data-theme="light"] #nav a[style*="rgba(255,255,255"] { color: rgba(0,0,0,0.40) !important; }
+
+    /* Waitlist persona buttons */
+    [data-theme="light"] .persona-btn {
+      border-color: rgba(0,0,0,0.14) !important;
+      color: rgba(0,0,0,0.40) !important;
+    }
+    [data-theme="light"] .persona-btn:hover {
+      border-color: rgba(0,0,0,0.35) !important;
+      color: rgba(0,0,0,0.75) !important;
+    }
+
+    /* Waitlist "which one are you" em */
+    [data-theme="light"] #waitlist em.text-white\/30 { color: rgba(0,0,0,0.22) !important; }
+
+    /* Footer border */
+    [data-theme="light"] footer { border-top-color: rgba(0,0,0,0.07) !important; }
+    [data-theme="light"] footer .border-t { border-top-color: rgba(0,0,0,0.07) !important; }
 
     ::selection { background: var(--accent); color: #fff; }
 
@@ -35,14 +182,14 @@
 
     /* Nav compact on scroll */
     #nav.compact {
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      background: rgba(5,5,5,0.9);
+      border-bottom: 1px solid var(--rule-color);
+      background: var(--nav-compact-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
 
     /* Horizontal rule */
-    .rule { border: none; border-top: 1px solid rgba(255,255,255,0.08); }
+    .rule { border: none; border-top: 1px solid var(--rule-color); }
 
     /* Noise (very subtle) */
     body::before {
@@ -171,10 +318,13 @@
 
     <a href="#" class="serif text-xl font-bold tracking-tight">Perlea.</a>
 
-    <div class="hidden md:flex items-center gap-10">
-      <a href="#who"          class="text-sm text-white/40 hover:text-white/80 transition-colors">Who It's For</a>
-      <a href="#capabilities" class="text-sm text-white/40 hover:text-white/80 transition-colors">The System</a>
-      <a href="#waitlist"     class="text-sm text-white/40 hover:text-white/80 transition-colors">Waitlist</a>
+    <div class="flex items-center gap-6">
+      <div class="hidden md:flex items-center gap-10">
+        <a href="#who"          class="text-sm text-white/40 hover:text-white/80 transition-colors">Who It's For</a>
+        <a href="#capabilities" class="text-sm text-white/40 hover:text-white/80 transition-colors">The System</a>
+        <a href="#waitlist"     class="text-sm text-white/40 hover:text-white/80 transition-colors">Waitlist</a>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode" title="Toggle theme"></button>
     </div>
 
   </div>
@@ -409,7 +559,7 @@
   <div class="grid md:grid-cols-2 gap-6">
 
     <!-- Marcus -->
-    <div class="reveal d1 p-8 border border-white/[0.07] hover:border-white/[0.15] transition-colors" style="background:#0d0d0d; border-radius:2px;">
+    <div class="reveal d1 p-8 border border-white/[0.07] hover:border-white/[0.15] transition-colors persona-card" style="background:#0d0d0d; border-radius:2px;">
       <div class="flex items-start gap-4 mb-6">
         <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF4500 0%,#6b0f00 100%);flex-shrink:0;"></div>
         <div>
@@ -436,7 +586,7 @@
     </div>
 
     <!-- Daniel -->
-    <div class="reveal d2 p-8 border border-white/[0.07] hover:border-white/[0.15] transition-colors" style="background:#0d0d0d; border-radius:2px;">
+    <div class="reveal d2 p-8 border border-white/[0.07] hover:border-white/[0.15] transition-colors persona-card" style="background:#0d0d0d; border-radius:2px;">
       <div class="flex items-start gap-4 mb-6">
         <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b 0%,#0a1628 100%);flex-shrink:0;"></div>
         <div>
@@ -481,9 +631,9 @@
   </p>
 
   <!-- Flywheel nodes -->
-  <div class="grid md:grid-cols-3 gap-px" style="background:rgba(255,255,255,0.05);">
+  <div class="grid md:grid-cols-3 gap-px flywheel-grid" style="background:rgba(255,255,255,0.05);">
 
-    <div class="reveal p-10" style="background:#050505;">
+    <div class="reveal p-10 flywheel-cell" style="background:#050505;">
       <div class="text-[#FF4500] text-xs font-mono mb-6 opacity-60">01</div>
       <h3 class="serif text-xl font-bold text-white mb-3">Skills</h3>
       <p class="text-white/30 text-sm leading-relaxed mb-6">
@@ -492,7 +642,7 @@
       <p class="text-[11px] tracking-widest uppercase" style="color:rgba(255,69,0,0.5);">Personalization moat</p>
     </div>
 
-    <div class="reveal d1 p-10" style="background:#050505;">
+    <div class="reveal d1 p-10 flywheel-cell" style="background:#050505;">
       <div class="text-[#FF4500] text-xs font-mono mb-6 opacity-60">02</div>
       <h3 class="serif text-xl font-bold text-white mb-3">Artifacts</h3>
       <p class="text-white/30 text-sm leading-relaxed mb-6">
@@ -501,7 +651,7 @@
       <p class="text-[11px] tracking-widest uppercase" style="color:rgba(255,69,0,0.5);">Portable proof of capability</p>
     </div>
 
-    <div class="reveal d2 p-10" style="background:#050505;">
+    <div class="reveal d2 p-10 flywheel-cell" style="background:#050505;">
       <div class="text-[#FF4500] text-xs font-mono mb-6 opacity-60">03</div>
       <h3 class="serif text-xl font-bold text-white mb-3">Network</h3>
       <p class="text-white/30 text-sm leading-relaxed mb-6">
@@ -513,7 +663,7 @@
   </div>
 
   <!-- The compounding statement -->
-  <div class="reveal d3 mt-16 pt-12 border-t border-white/[0.06]">
+  <div class="reveal d3 mt-16 pt-12 border-t border-white/[0.06] compounding-quote">
     <p class="serif italic text-white/40 leading-relaxed" style="font-size: clamp(18px, 2.5vw, 26px); max-width:700px;">
       "A Lovable user at month 12 and a Perlea user at month 12 both have a prototype. The Perlea user has the next 10 inside them."
     </p>
@@ -967,6 +1117,25 @@
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => { nav.classList.toggle('compact', window.scrollY > 40); }, { passive: true });
 
+  // ── Dark / Light Theme Toggle ──
+  function applyTheme(theme) {
+    const isLight = theme === 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('perlea-theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Init from storage or system preference
+  (function initTheme() {
+    const stored = localStorage.getItem('perlea-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(stored || (prefersDark ? 'dark' : 'light'));
+  })();
+
   // ── Persona selector ──
   const PERSONA_MSGS = {
     founder: "Your engineers are on the critical path. You're not. We'll get you to a demoable prototype in weeks.",
@@ -975,9 +1144,10 @@
     other:   "Tell us what you're building. We'll figure out the path together.",
   };
   function selectPersona(btn, type) {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
     document.querySelectorAll('.persona-btn').forEach(b => {
-      b.style.borderColor = 'rgba(255,255,255,0.12)';
-      b.style.color = 'rgba(255,255,255,0.4)';
+      b.style.borderColor = isLight ? 'rgba(0,0,0,0.14)' : 'rgba(255,255,255,0.12)';
+      b.style.color = isLight ? 'rgba(0,0,0,0.40)' : 'rgba(255,255,255,0.4)';
     });
     btn.style.borderColor = '#FF4500';
     btn.style.color = '#fff';

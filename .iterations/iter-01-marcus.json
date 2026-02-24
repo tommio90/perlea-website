@@ -1,0 +1,61 @@
+{
+  "iteration": 1,
+  "timestamp": "2026-02-24T01:09:06.256221",
+  "persona": {
+    "name": "Marcus",
+    "role": "Founder, freight-tech startup, Series A in 11 weeks",
+    "context": "Extremely time-pressured. Has seen 100 landing pages. Deeply skeptical of learning platforms \u2014 burned by ones that didn't lead to shipping. Has $1.2M raised, domain expertise, but can't code. Evaluating in 30 seconds.",
+    "primary_concern": "Can this actually help me demo something for Series A investors in 8 weeks?",
+    "tolerance": "Very low. Bounces instantly if it feels generic or slow."
+  },
+  "feedback": {
+    "first_3_seconds": "Okay, Perlea... Gradient background is kind of cool, but I'm immediately scanning for what it *does*.",
+    "headline_reaction": "\"Learning is building now.\" Vague. I need specifics. Does this build AI apps? Freight tech?",
+    "clarity_score": 4,
+    "conversion_likelihood": 2,
+    "what_made_you_stay": "The animated card section looks intriguing.",
+    "what_confused_you": [
+      "The connection between 'learning' and what I need to *build* isn't clear.",
+      "The word 'paradigm' is a red flag for empty promises.",
+      "I don't immediately see the specific AI capabilities or tools."
+    ],
+    "missing_info": [
+      "Specific examples of what I can *build* related to AI, preferably in logistics or supply chain.",
+      "A timeline - can I *really* get a demo ready in 8 weeks?",
+      "Pricing - is this even affordable for a Series A startup?"
+    ],
+    "drop_off_reason": "Too abstract. Doesn't quickly convince me it's worth my time or money to build a specific AI demo for my Series A.",
+    "copy_improvements": [
+      {
+        "location": "Hero Headline",
+        "current": "Learning is building\nnow.",
+        "improved": "Build AI-Powered Logistics Apps. Fast.",
+        "why": "Directly addresses my need and provides a clear value proposition."
+      },
+      {
+        "location": "Hero Paragraph",
+        "current": "The boundary between learning and building has dissolved. Perlea is designed around that truth \u2014 you develop real AI skills by doing real work, guided at every step.",
+        "improved": "Get hands-on experience building AI apps for logistics and supply chain. Guided tutorials and pre-built components let you launch a demo in weeks.",
+        "why": "Adds specificity and a concrete timeframe."
+      },
+      {
+        "location": "Waitlist Section",
+        "current": "Join Waitlist",
+        "improved": "Get Early Access",
+        "why": "'Waitlist' implies a long wait. 'Early Access' feels more exclusive and urgent."
+      }
+    ],
+    "structural_improvements": [
+      {
+        "what": "Add a section showing specific demo examples or case studies related to logistics/supply chain AI.",
+        "why": "Provides immediate proof that this platform is relevant to my needs."
+      },
+      {
+        "what": "Include a pricing estimate or range.",
+        "why": "Helps me quickly determine if it's financially viable."
+      }
+    ],
+    "overall_rating": 3,
+    "verdict": "Too vague and slow to connect to my specific need; I'd bounce and keep searching for a more targeted solution."
+  }
+}
